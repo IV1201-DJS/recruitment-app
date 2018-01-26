@@ -1,37 +1,36 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
+  "name": "adonis-api-app",
+  "version": "4.0.0",
+  "description": "Adonisjs boilerplate for API server with pre-configured JWT",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon --watch src --exec 'ts-node src/index.ts'",
-    "build": "tsc"
+    "start": "node server.js",
+    "test": "node ace test"
   },
+  "keywords": [
+    "adonisjs",
+    "adonis-app"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
   "dependencies": {
-    "@types/body-parser": "^1.16.8",
-    "@types/cors": "^2.8.3",
-    "@types/dotenv": "^4.0.2",
-    "@types/express": "^4.11.0",
-    "@types/graphql": "^0.12.1",
-    "@types/mongoose": "^4.7.32",
-    "@types/morgan": "^1.7.35",
-    "@types/passport": "^0.4.2",
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "dotenv": "^4.0.0",
-    "express": "^4.16.2",
+    "@adonisjs/ace": "^4.0.7",
+    "@adonisjs/auth": "^2.0.10",
+    "@adonisjs/bodyparser": "^2.0.0",
+    "@adonisjs/cors": "^1.0.3",
+    "@adonisjs/fold": "^4.0.5",
+    "@adonisjs/framework": "^4.0.28",
+    "@adonisjs/ignitor": "^1.0.14",
+    "@adonisjs/lucid": "^4.0.24",
+    "adonis-apollo-server": "^1.0.2",
     "graphql": "^0.12.3",
-    "mongoose": "^5.0.0",
-    "morgan": "^1.9.0",
-    "passport": "^0.4.0",
-    "typescript": "^2.6.2"
+    "graphql-tools": "^2.19.0",
+    "pg": "^7.4.1",
+    "slugify": "^1.2.9"
   },
-  "devDependencies": {
-    "@types/jest": "^22.0.1",
-    "jest": "^22.1.4",
-    "nodemon": "^1.14.11",
-    "ts-jest": "^22.0.1",
-    "ts-node": "^4.1.0"
+  "devDependencies": {},
+  "autoload": {
+    "App": "./app"
   }
 }

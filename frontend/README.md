@@ -1,6 +1,6 @@
-# frontend
+# recruitment-frontend
 
-> The web-based frontend application for the recruitment app
+> Recruitment application frontend
 
 ## Build Setup
 
