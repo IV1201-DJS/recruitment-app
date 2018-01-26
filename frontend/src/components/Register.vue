@@ -4,24 +4,24 @@
       <v-flex sm10 offset-sm1 text-xs-right>
         <v-card>
           <v-toolbar color="indigo" dark>
-            <v-toolbar-title>Register</v-toolbar-title>
+            <v-toolbar-title v-t="'message.register'" />
           </v-toolbar>
 
           <v-card-text>
             <v-form>
               <v-text-field
-                label="First name"
+                :label="firstNameLocale"
                 v-model="firstName"
                 :error-messages="errors.collect('firstName')"
                 v-validate="'required|min:2|max:32'"
-                data-vv-name="firstName"
+                :data-vv-name="firstNameLocale"
               />
               <v-text-field
-                label="Last name"
+                :label="lastNameLocale"
                 v-model="lastName"
-                :error-messages="errors.collect('lastName')"
+                :error-messages="errors.collect(lastNameLocale)"
                 v-validate="'required|min:2|max:32'"
-                data-vv-name="lastName"
+                :data-vv-name="lastNameLocale"
               />
               <v-text-field
                 label="E-mail"
@@ -44,13 +44,13 @@
               >
                 <v-text-field
                   slot="activator"
-                  label="Date of birth"
+                  :label="dateOfBirthLocale"
                   v-model="dateOfBirth"
-                  :error-messages="errors.collect('dateOfBirth')"
+                  :error-messages="errors.collect(dateOfBirthLocale)"
                   v-validate="'required'"
                   prepend-icon="event"
                   readonly
-                  data-vv-name="dateOfBirth"
+                  :data-vv-name="dateOfBirthLocale"
                 />
                 <v-date-picker v-model="dateOfBirth" no-title scrollable actions :allowed-dates="allowedDates">
                   <template slot-scope="{ save, cancel }">
@@ -64,31 +64,35 @@
               </v-menu>
 
               <v-text-field
-                label="Username"
+                :label="usernameLocale"
                 v-model="username"
-                :error-messages="errors.collect('username')"
+                :error-messages="errors.collect(usernameLocale)"
                 v-validate="'required|min:3|max:32'"
-                data-vv-name="username"
+                :data-vv-name="usernameLocale"
               />
               <v-text-field
-                label="Password"
+                :label="passwordLocale"
                 v-model="password"
-                :error-messages="errors.collect('password')"
+                :error-messages="errors.collect(passwordLocale)"
                 v-validate="'required|confirmed|min:6|max:32'"
-                data-vv-name="password"
+                :data-vv-name="passwordLocale"
+                :append-icon="e1 ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (e1 = !e1)"
+                :type="e1 ? 'password' : 'text'"
               />
               <v-text-field
-                label="Password confirmation"
+                :label="passwordConfirmationLocale"
                 v-model="password_confirmation"
-                :error-messages="errors.collect('password confirmation')"
+                :error-messages="errors.collect(passwordConfirmationLocale)"
                 v-validate="'required|min:6|max:32'"
                 data-vv-name="password confirmation"
-                name="password_confirmation"
+                :name="passwordConfirmationLocale"
+                :append-icon="e2 ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (e2 = !e2)"
+                :type="e2 ? 'password' : 'text'"
               />
 
-              <v-btn color="primary" @click="register">
-                Register
-              </v-btn>
+              <v-btn color="primary" @click="register" v-t="'message.register'" />
             </v-form>
           </v-card-text>
         </v-card>
@@ -99,6 +103,8 @@
 <script>
 export default {
   data: () => ({
+    e1: true,
+    e2: true,
     firstName: '',
     lastName: '',
     email: '',
@@ -108,18 +114,38 @@ export default {
     password: '',
     password_confirmation: ''
   }),
+  computed: {
+    firstNameLocale () {
+      return this.$t('user.firstName')
+    },
+    lastNameLocale () {
+      return this.$t('user.lastName')
+    },
+    dateOfBirthLocale () {
+      return this.$t('user.dateOfBirth')
+    },
+    usernameLocale () {
+      return this.$t('user.username')
+    },
+    passwordLocale () {
+      return this.$t('user.password')
+    },
+    passwordConfirmationLocale () {
+      return this.$t('message.passwordConfirmation')
+    }
+  },
   methods: {
     register () {
-      if (this.$refs.form.validate()) {
-        console.log('Register clicked!')
-        // Native form submission is not yet supported
-        // axios.post('/api/submit', {
-        //   name: this.name,
-        //   email: this.email,
-        //   select: this.select,
-        //   checkbox: this.checkbox
-        // })
-      }
+      localStorage.locale = 'sv'
+
+      console.log('Register clicked!')
+      // Native form submission is not yet supported
+      // axios.post('/api/submit', {
+      //   name: this.name,
+      //   email: this.email,
+      //   select: this.select,
+      //   checkbox: this.checkbox
+      // })
     },
     allowedDates (date) {
       return new Date(date) < new Date()

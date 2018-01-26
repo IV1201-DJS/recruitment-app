@@ -4,33 +4,30 @@
       <v-flex sm10 offset-sm1 text-xs-right>
         <v-card>
           <v-toolbar color="indigo" dark>
-            <v-toolbar-title>Login</v-toolbar-title>
+            <v-toolbar-title v-t="'message.login'" />
           </v-toolbar>
 
           <v-card-text>
             <v-form>
               <v-text-field
-                label="E-mail"
-                v-model="email"
-                :error-messages="errors.collect('email')"
-                v-validate="'required|email'"
-                data-vv-name="email"
+                :label="emailOrUsernameLocale"
+                v-model="emailOrUsername"
+                :error-messages="errors.collect(emailOrUsernameLocale)"
+                v-validate="'required'"
+                :data-vv-name="emailOrUsernameLocale"
               />
               <v-text-field
-                label="Password"
+                :label="passwordLocale"
                 v-model="password"
-                :error-messages="errors.collect('password')"
+                :error-messages="errors.collect(passwordLocale)"
                 v-validate="'required|min:6|max:32'"
-                data-vv-name="password"
+                :data-vv-name="passwordLocale"
                 :append-icon="e1 ? 'visibility' : 'visibility_off'"
                 :append-icon-cb="() => (e1 = !e1)"
-                class="input-group--focused"
                 :type="e1 ? 'password' : 'text'"
               />
 
-              <v-btn color="primary" @click="login">
-                Login
-              </v-btn>
+              <v-btn color="primary" @click="login" v-t="'message.login'" />
             </v-form>
           </v-card-text>
         </v-card>
@@ -42,14 +39,24 @@
 export default {
   data: () => ({
     e1: true,
-    email: '',
+    emailOrUsername: '',
     password: ''
   }),
+  filters: {
+    lowerCase (data) {
+      return data.toLowerCase()
+    }
+  },
+  computed: {
+    emailOrUsernameLocale () {
+      return this.$t('message.emailOrUsername')
+    },
+    passwordLocale () {
+      return this.$t('user.password')
+    }
+  },
   methods: {
     async login () {
-      await this.$validator.validateAll()
-      console.log('Login clicked!')
-
       // if (this.$refs.form.validate()) {
       // Native form submission is not yet supported
       // axios.post('/api/submit', {
