@@ -6,19 +6,19 @@ const resolvers = require('./resolvers')
 // Define our schema using the GraphQL schema language
 const typeDefs = `
   type User {
-    id: ID!
-    username: String!
-    email: String!
-    firstname: String!
-    lastname: String!
-    ssn: String!
-    role: Role!
+    id: ID
+    username: String
+    email: String
+    firstname: String
+    lastname: String
+    ssn: String
+    role: Role
     availabilities: [Availability]
     competences: [UserCompetence]
   }
   type Role {
-    id: ID!
-    name: String!
+    id: ID
+    name: String
   }
   type Availability {
     user: User
@@ -48,17 +48,13 @@ const typeDefs = `
     id: ID
     name: String
   }
-
+  type Period {
+    from: String
+    to: String
+  }
   type Query {
-    allUsers: [User]
-    allRoles: [Role]
-    allAvailabilities: [Availability]
-    allCompetences: [Competence]
-    allUserCompetences: [UserCompetence]
-    allLanguages: [Language]
-    allCompetenceTranslations: [CompetenceTranslation]
-    allRoleTranslations: [RoleTranslation]
-    fetchUser(id: ID!): User
+    fetchUser(id: ID): User
+    fetchApplications(competence_id: ID): [User]
   }
 `
 

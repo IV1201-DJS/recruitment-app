@@ -9,12 +9,26 @@ const Competence = use('App/Models/Competence')
 const RoleTranslation = use('App/Models/RoleTranslation')
 const CompetenceTranslation = use('App/Models/CompetenceTranslation')
 const Language = use('App/Models/Language')
-const slugify = require('slugify')
 
 const resolvers = {
   Query: {
-    async allUsers() {
-      const users = await User.query().with('role').fetch()
+    async fetchApplications(_, {competence_id}) {
+
+      /*
+          .whereHas('availabilities', builder => {
+          builder
+            .where('from', '<=', period.from)
+            .where('to', '>=', period.to)
+        })
+      */
+      const users = await User
+        .query()
+        .whereHas('competences', builder => {
+          builder
+            .where('competences.id', competence_id)
+        })
+        .with('competences')
+        .fetch()
       return users.toJSON()
     },
     async fetchUser(_, { id }) {
