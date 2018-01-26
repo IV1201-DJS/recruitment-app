@@ -23,8 +23,11 @@
     "@adonisjs/framework": "^4.0.28",
     "@adonisjs/ignitor": "^1.0.14",
     "@adonisjs/lucid": "^4.0.24",
-    "mariasql": "^0.2.6",
-    "pg": "^7.4.1"
+    "adonis-apollo-server": "^1.0.2",
+    "graphql": "^0.12.3",
+    "graphql-tools": "^2.19.0",
+    "pg": "^7.4.1",
+    "slugify": "^1.2.9"
   },
   "devDependencies": {},
   "autoload": {
