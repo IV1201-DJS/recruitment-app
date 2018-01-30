@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl class="mt-5">
+  <v-container grid-list-xl mt-5>
     <v-layout row>
       <v-flex sm10 offset-sm1 text-xs-right>
         <v-card>
