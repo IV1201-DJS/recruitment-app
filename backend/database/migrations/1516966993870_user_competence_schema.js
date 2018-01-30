@@ -4,10 +4,10 @@ const Schema = use('Schema')
 
 class UserCompetenceSchema extends Schema {
   up () {
-    this.create('user_competences', (table) => {
+    this.create('competence_user', (table) => {
       table.increments('id')
-      table.integer('user_id').unsigned().references('id').inTable('users')
-      table.integer('competence_id').unsigned().references('id').inTable('competences')
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('competence_id').unsigned().references('id').inTable('competences').onDelete('CASCADE')
       table.decimal('experience_years').notNullable()
       table.timestamps()
       table.timestamp('deleted_at').nullable()
@@ -16,7 +16,7 @@ class UserCompetenceSchema extends Schema {
   }
 
   down () {
-    this.drop('user_competences')
+    this.dropTableIfExists('competence_user')
   }
 }
 

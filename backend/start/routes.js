@@ -15,10 +15,22 @@
 
 const Route = use('Route')
 const GraphqlAdonis = use('ApolloServer')
-const schema = require('../app/data/schema');
+const schema = require('../app/data/schema')
+const User = use('App/Models/User')
 
 Route.get('/', ({ request }) => {
   return { greeting: 'Hello world in JSON' }
+})
+
+Route.get('/debug', async ({ request }) => {
+  const user = await User.query()
+    .where({id: 1})
+    .with('role')
+    .with('availabilities')
+    .with('competences')
+    .first()
+
+  return user
 })
 
 Route.route('/graphql', ({ request, auth, response }) => {
@@ -31,3 +43,4 @@ Route.route('/graphql', ({ request, auth, response }) => {
 Route.get('/graphiql', ({ request, response }) => {
   return GraphqlAdonis.graphiql({ endpointURL: '/graphql' }, request, response)
 })
+

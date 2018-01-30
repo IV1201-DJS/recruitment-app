@@ -12,14 +12,14 @@ class UserSchema extends Schema {
       table.string('firstname').notNullable()
       table.string('lastname').notNullable()
       table.string('ssn').notNullable()
-      table.integer('role_id').unsigned().references('id').inTable('roles')
+      table.integer('role_id').unsigned().references('id').inTable('roles').onDelete('CASCADE')
       table.timestamps()
       table.timestamp('deleted_at').nullable()
     })
   }
 
   down () {
-    this.drop('users')
+    this.dropTableIfExists('users')
   }
 }
 
