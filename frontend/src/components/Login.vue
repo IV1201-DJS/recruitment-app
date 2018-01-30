@@ -36,12 +36,26 @@
   </v-container>
 </template>
 <script>
+import gql from 'graphql-tag'
+
 export default {
   data: () => ({
     e1: true,
     emailOrUsername: '',
     password: ''
   }),
+  apollo: {
+    user () {
+      query: gql`{
+        fetchUser(id: 1) {
+          username
+        }
+      }`
+    }
+  },
+  mounted () {
+    console.log(this.$apollo.user)
+  },
   filters: {
     lowerCase (data) {
       return data.toLowerCase()
