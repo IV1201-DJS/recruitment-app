@@ -31,10 +31,11 @@ Factory.blueprint('App/Models/Competence', (faker) => {
 Factory.blueprint('App/Models/User', (faker) => {
   const role_id = faker.integer({min: 1, max: 10})
   const randInt = faker.integer({min: 1, max: 1000000000})
+
   return {
     username: faker.username() + randInt,
     email: randInt + faker.email(),
-    password: 'olle', //Hash.make('hej123'),
+    password: Hash.make('hej123'),
     firstname: faker.first(),
     lastname: faker.last(),
     ssn: randInt + ':' + faker.birthday({string: true, american: false}).replace(/\//, '') + '-' + faker.ssn({ssnfour: true}),
