@@ -26,8 +26,11 @@ const typeDefs = `
     to: String
   }
   type UserCompetence {
-    user: User
-    competence: Competence
+    id: ID
+    name: String
+    pivot: UserCompetencePivot
+  }
+  type UserCompetencePivot {
     experience_years: Float
   }
   type Competence {
@@ -53,10 +56,10 @@ const typeDefs = `
     to: String
   }
   type Query {
-    fetchUser(id: ID): User
-    fetchApplications(competence_id: ID): [User]
+    User(id: ID): User
+    Applications(competence_id: ID): [User]
+    Competences(name: String): [Competence]
   }
 `
 
 module.exports = makeExecutableSchema({ typeDefs, resolvers })
-

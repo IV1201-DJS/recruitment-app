@@ -62,7 +62,7 @@
                   chips
                   required
                   :items="items"
-                  :rules="[() => select.length > 0 || 'You must choose at least one']"
+                  :rules="[() => select.length > 0 || 'You must choose at least one competence']"
                   :search-input.sync="search"
                   v-model="select"
                 ></v-select>

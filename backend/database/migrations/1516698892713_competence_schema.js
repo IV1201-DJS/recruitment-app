@@ -13,7 +13,7 @@ class CompetenceSchema extends Schema {
   }
 
   down () {
-    this.drop('competences')
+    this.dropTableIfExists('competences')
   }
 }
 

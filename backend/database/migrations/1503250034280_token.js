@@ -6,7 +6,7 @@ class TokensSchema extends Schema {
   up () {
     this.create('tokens', table => {
       table.increments()
-      table.integer('user_id').unsigned().references('id').inTable('users')
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
       table.string('token', 40).notNullable().unique()
       table.string('type', 80).notNullable()
       table.boolean('is_revoked').defaultTo(false)
@@ -15,7 +15,7 @@ class TokensSchema extends Schema {
   }
 
   down () {
-    this.drop('tokens')
+    this.dropTableIfExists('tokens')
   }
 }
 

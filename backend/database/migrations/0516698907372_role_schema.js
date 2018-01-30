@@ -13,7 +13,7 @@ class RoleSchema extends Schema {
   }
 
   down () {
-    this.drop('roles')
+    this.dropTableIfExists('roles')
   }
 }
 

@@ -3,8 +3,12 @@
 const Model = use('Model')
 
 class UserCompetence extends Model {
-  static boot () {
-    super.boot()
+  user () {
+    return this.belongsTo('App/Models/User')
+  }
+
+  competence () {
+    return this.belongsTo('App/Models/Competence')
   }
 }
 
