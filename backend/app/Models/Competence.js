@@ -3,11 +3,14 @@
 const Model = use('Model')
 
 class Competence extends Model {
-  user () {
-    return this.belongsTo('App/Models/User')
-  }
   translations () {
     return this.hasMany('App/Models/CompetenceTranslation')
+  }
+  competences () {
+    return this
+      .belongsToMany('App/Models/User')
+      .withPivot(['experience_years'])
+      .pivotTable('competences')
   }
 }
 

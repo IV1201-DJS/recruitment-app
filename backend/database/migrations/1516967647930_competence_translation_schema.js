@@ -5,8 +5,8 @@ const Schema = use('Schema')
 class CompetenceTranslationSchema extends Schema {
   up () {
     this.create('competence_translations', (table) => {
-      table.integer('competence_id').unsigned().references('id').inTable('competences')
-      table.integer('language_id').unsigned().references('id').inTable('languages')
+      table.integer('competence_id').unsigned().references('id').inTable('competences').onDelete('CASCADE')
+      table.integer('language_id').unsigned().references('id').inTable('languages').onDelete('CASCADE')
       table.string('translation').notNullable()
       table.timestamps()
       table.timestamp('deleted_at').nullable()
@@ -15,7 +15,7 @@ class CompetenceTranslationSchema extends Schema {
   }
 
   down () {
-    this.drop('competence_translations')
+    this.dropTableIfExists('competence_translations')
   }
 }
 

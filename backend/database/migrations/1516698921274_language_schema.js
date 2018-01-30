@@ -13,7 +13,7 @@ class LanguageSchema extends Schema {
   }
 
   down () {
-    this.drop('languages')
+    this.dropTableIfExists('languages')
   }
 }
 
