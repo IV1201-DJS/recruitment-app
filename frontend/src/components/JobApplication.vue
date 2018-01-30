@@ -10,31 +10,31 @@
           <v-container fluid>
             <v-text-field
               label="Username"
-              :value="fetchUser.username"
+              :value="User.username"
               disabled
             />
 
             <v-text-field
               label="First name"
-              :value="fetchUser.firstname"
+              :value="User.firstname"
               disabled
             />
 
             <v-text-field
               label="Last name"
-              :value="fetchUser.lastname"
+              :value="User.lastname"
               disabled
             />
 
             <v-text-field
               label="Email"
-              :value="fetchUser.email"
+              :value="User.email"
               disabled
             />
 
             <v-text-field
               label="SSN"
-              :value="fetchUser.ssn"
+              :value="User.ssn"
               disabled
             />
           </v-container>
@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       e6: 1,
-      fetchUser: {},
+      User: {},
       userId: 1,
       loading: false,
       items: [],
@@ -160,9 +160,9 @@ export default {
     }
   },
   apollo: {
-    fetchUser: {
+    User: {
       query: gql`query ($id: ID) {
-        fetchUser (id: $id) {
+        User (id: $id) {
           username
           firstname
           lastname

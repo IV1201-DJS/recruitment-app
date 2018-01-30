@@ -9,8 +9,6 @@
 
           <v-card-text>
             <v-form>
-              <h1>{{ fetchUser.username }}</h1>
-
               <v-text-field
                 :label="emailOrUsernameLocale"
                 v-model="emailOrUsername"
@@ -44,24 +42,8 @@ export default {
   data: () => ({
     e1: true,
     emailOrUsername: '',
-    password: '',
-    fetchUser: '',
-    userId: 1
+    password: ''
   }),
-  apollo: {
-    fetchUser: {
-      query: gql`query fetchUser ($id: ID) {
-        fetchUser (id: $id) {
-          username
-        }
-      }`,
-      variables () {
-        return {
-          id: this.userId
-        }
-      }
-    }
-  },
   mounted () {
   },
   filters: {
