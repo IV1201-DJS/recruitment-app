@@ -35,10 +35,19 @@ Factory.blueprint('App/Models/User', (faker) => {
   return {
     username: faker.username() + randInt,
     email: randInt + faker.email(),
-    password: Hash.make('hej123'),
+    password: 'hej123',
     firstname: faker.first(),
     lastname: faker.last(),
     ssn: randInt + ':' + faker.birthday({string: true, american: false}).replace(/\//, '') + '-' + faker.ssn({ssnfour: true}),
     role_id
   }
+})
+
+Factory.blueprint('App/Models/Availability', (faker) => {
+  return {
+    user_id: faker.integer({min: 1, max: 10}),
+    from: faker.date({year: 2017}),
+    to: faker.date({year: 2018})
+  }
+
 })

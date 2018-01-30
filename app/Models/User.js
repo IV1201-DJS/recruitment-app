@@ -9,7 +9,7 @@ class User extends Model {
   competences () {
     return this
       .belongsToMany('App/Models/Competence')
-      .pivotModel('App/Models/UserCompetence')
+      .withPivot(['experience_years'])
   }
   role () {
     return this.belongsTo('App/Models/Role')
@@ -24,8 +24,7 @@ class User extends Model {
      * Look at `app/Models/Hooks/User.js` file to
      * check the hashPassword method
      */
-    // TODO: remove comment below
-    // this.addHook('beforeCreate', 'User.hashPassword')
+     this.addHook('beforeCreate', 'User.hashPassword')
   }
 
   /**

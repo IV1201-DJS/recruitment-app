@@ -12,7 +12,7 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async fetchApplications(_, {competence_id}) {
+    async Applications(_, {competence_id}) {
 
       /*
           .whereHas('availabilities', builder => {
@@ -31,11 +31,20 @@ const resolvers = {
         .fetch()
       return users.toJSON()
     },
-    async fetchUser(_, { id }) {
-      const user = await User.find(id)
-      await user.loadMany(['role', 'availabilities', 'competences'])
-      Logger.info(user.toJSON())
+
+    async User(_, { id }) {
+      const user = await User.query()
+        .where({id})
+        .with('role')
+        .with('availabilities')
+        .with('competences')
+        .first()
+      Logger.debug(user.toJSON())
       return user.toJSON()
+    },
+    async Competences(_, { name }) {
+      const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
+      return competences.toJSON()
     }
   }
 }
