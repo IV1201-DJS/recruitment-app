@@ -50,7 +50,7 @@ export default {
   }),
   apollo: {
     fetchUser: {
-      query: gql`query klgfdsjlgfds ($id: ID) {
+      query: gql`query fetchUser ($id: ID) {
         fetchUser (id: $id) {
           username
         }
@@ -80,15 +80,6 @@ export default {
   methods: {
     async login () {
       this.userId++
-      // if (this.$refs.form.validate()) {
-      // Native form submission is not yet supported
-      // axios.post('/api/submit', {
-      //   name: this.name,
-      //   email: this.email,
-      //   select: this.select,
-      //   checkbox: this.checkbox
-      // })
-      // }
     }
   }
 }
