@@ -9,6 +9,8 @@
 
           <v-card-text>
             <v-form>
+              <h1>{{ fetchUser.username }}</h1>
+
               <v-text-field
                 :label="emailOrUsernameLocale"
                 v-model="emailOrUsername"
@@ -36,12 +38,32 @@
   </v-container>
 </template>
 <script>
+import gql from 'graphql-tag'
+
 export default {
   data: () => ({
     e1: true,
     emailOrUsername: '',
-    password: ''
+    password: '',
+    fetchUser: '',
+    userId: 1
   }),
+  apollo: {
+    fetchUser: {
+      query: gql`query fetchUser ($id: ID) {
+        fetchUser (id: $id) {
+          username
+        }
+      }`,
+      variables () {
+        return {
+          id: this.userId
+        }
+      }
+    }
+  },
+  mounted () {
+  },
   filters: {
     lowerCase (data) {
       return data.toLowerCase()
@@ -57,15 +79,7 @@ export default {
   },
   methods: {
     async login () {
-      // if (this.$refs.form.validate()) {
-      // Native form submission is not yet supported
-      // axios.post('/api/submit', {
-      //   name: this.name,
-      //   email: this.email,
-      //   select: this.select,
-      //   checkbox: this.checkbox
-      // })
-      // }
+      this.userId++
     }
   }
 }

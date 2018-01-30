@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import JobApplication from '@/components/JobApplication'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
 
@@ -10,8 +10,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'JobApplication',
+      component: JobApplication
     },
     {
       path: '/login',
