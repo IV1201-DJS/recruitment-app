@@ -28,9 +28,6 @@ const typeDefs = `
   type UserCompetence {
     id: ID
     name: String
-    pivot: UserCompetencePivot
-  }
-  type UserCompetencePivot {
     experience_years: Float
   }
   type Competence {
