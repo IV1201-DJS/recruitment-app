@@ -5,7 +5,7 @@ const Model = use('Model')
 class Competence extends Model {
   static boot () {
     super.boot()
-    this.addHook('afterFetch', 'CompetenceHook.pivotFlatten')
+    //this.addHook('afterFetch', 'CompetenceHook.pivotFlatten')
   }
   translations () {
     return this.hasMany('App/Models/CompetenceTranslation')
