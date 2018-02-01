@@ -57,6 +57,9 @@ const typeDefs = `
     Applications(competence_id: ID): [User]
     Competences(name: String): [Competence]
   }
+  type Mutation {
+    login (username: String!, password: String!): String
+  }
 `
 
 module.exports = makeExecutableSchema({ typeDefs, resolvers })
