@@ -2,7 +2,7 @@
 
 const Schema = use('Schema')
 
-class UserCompetenceSchema extends Schema {
+class CompetenceUserSchema extends Schema {
   up () {
     this.create('competence_user', (table) => {
       table.increments('id')
@@ -20,4 +20,4 @@ class UserCompetenceSchema extends Schema {
   }
 }
 
-module.exports = UserCompetenceSchema
+module.exports = CompetenceUserSchema
