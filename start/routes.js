@@ -24,13 +24,12 @@ Route.get('/', ({ request }) => {
 
 Route.get('/debug', async ({ request }) => {
   const user = await User.query()
-    .where({id: 1})
-    .with('role')
-    .with('availabilities')
-    .with('competences')
-    .first()
-
-  return user
+        .where({id: 5})
+        .with('role')
+        .with('availabilities')
+        .with('competences')
+        .first()
+    return user
 })
 
 Route.route('/graphql', ({ request, auth, response }) => {

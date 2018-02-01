@@ -39,9 +39,9 @@ const resolvers = {
         .with('availabilities')
         .with('competences')
         .first()
-      Logger.debug(user.toJSON())
       return user.toJSON()
     },
+
     async Competences(_, { name }) {
       const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
       return competences.toJSON()
