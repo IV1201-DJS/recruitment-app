@@ -24,12 +24,7 @@ const resolvers = {
     },
 
     async User(_, { id }) {
-      const user = await User.query()
-        .where({id})
-        .with('role')
-        .with('availabilities')
-        .with('competences')
-        .first()
+      const user = await User.findOrFail(id)
       return user.toJSON()
     },
 
@@ -49,6 +44,35 @@ const resolvers = {
       return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2})
     }
 
+  },
+
+  User: {
+    async availabilities(userInJson) {
+      const user = new User()
+      user.newUp(userInJson)
+      const availabilities = await user.availabilities().fetch()
+      return availabilities.toJSON()
+    },
+    async competences(userInJson) {
+      const user = new User()
+      user.newUp(userInJson)
+      const competences = await user.competences().fetch()
+      return competences.toJSON()
+    },
+    async role(userInJson) {
+      const user = new User()
+      user.newUp(userInJson)
+      const role = await user.role().fetch()
+      return role.toJson()
+    }
+  },
+
+  UserCompetence: {
+    async experience_years(competenceAsJson) {
+      const competence = new Competence()
+      competence.newUp(competenceAsJson)
+      return competence.pivot.experience_years
+    }
   }
 }
 
