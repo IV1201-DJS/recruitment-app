@@ -12,14 +12,6 @@ const Language = use('App/Models/Language')
 const resolvers = {
   Query: {
     async Applications(_, {competence_id}) {
-
-      /*
-          .whereHas('availabilities', builder => {
-          builder
-            .where('from', '<=', period.from)
-            .where('to', '>=', period.to)
-        })
-      */
       const users = await User
         .query()
         .whereHas('competences', builder => {
@@ -45,6 +37,14 @@ const resolvers = {
       const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
       return competences.toJSON()
     }
+  },
+
+  Mutation: {
+    async login (_, { username, password }, { auth }) {
+      const { token } = await auth.attempt(username, password)
+      return token
+    }
+
   }
 }
 

@@ -35,7 +35,7 @@ Route.get('/debug', async ({ request }) => {
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({
     schema,
-    //context: { auth }
+    context: { auth }
   }, request, response)
 }, ['GET', 'POST'])
 
