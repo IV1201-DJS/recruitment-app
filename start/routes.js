@@ -32,12 +32,17 @@ Route.get('/debug', async ({ request }) => {
     return user
 })
 
+Route.post('/api/login', async ({ request, auth }) => {
+  return {token: await auth.attempt(username, password)}
+})
+
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({
     schema,
     context: { auth }
   }, request, response)
 }, ['GET', 'POST'])
+.middleware(['auth-jwt'])
 
 Route.get('/graphiql', ({ request, response }) => {
   return GraphqlAdonis.graphiql({ endpointURL: '/graphql' }, request, response)

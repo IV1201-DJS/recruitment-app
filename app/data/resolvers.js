@@ -35,15 +35,9 @@ const resolvers = {
   },
 
   Mutation: {
-    async login (_, { username, password }, { auth }) {
-      const { token } = await auth.attempt(username, password)
-      return {token}
-    },
-
     async createUser (_, {username, password, email, firstname, lastname, ssn}) {
       return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2})
     }
-
   },
 
   User: {
