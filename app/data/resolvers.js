@@ -11,7 +11,7 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async Applications(_, {competence_id}) {
+    async Applications(obj, { competence_id }) {
       const users = await User
         .query()
         .whereHas('competences', builder => {
@@ -20,31 +20,30 @@ const resolvers = {
         })
         .with('competences')
         .fetch()
+
       return users.toJSON()
     },
 
-    async User(_, { id }) {
+    async User(obj, { id }) {
       const user = await User.findOrFail(id)
+
       return user.toJSON()
     },
 
-    async Competences(_, { name }) {
+    async Competences(obj, { name }) {
       const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
+
       return competences.toJSON()
     },
-    async CurrentUser(_, { auth }) { 
-      try {
-        const user = await auth.getUser()
-        return user
-      } catch (error) {
-        throw new Error('Missing or invalid jwt token')
-      }
+
+    async CurrentUser(obj, args, { auth }) {
+      return await auth.getUser()
     }
   },
 
   Mutation: {
-    async createUser (_, {username, password, email, firstname, lastname, ssn}) {
-      return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2})
+    async createUser(obj, { username, password, email, firstname, lastname, ssn }) {
+      return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2 })
     }
   },
 
@@ -53,18 +52,23 @@ const resolvers = {
       const user = new User()
       user.newUp(userInJson)
       const availabilities = await user.availabilities().fetch()
+
       return availabilities.toJSON()
     },
+
     async competences(userInJson) {
       const user = new User()
       user.newUp(userInJson)
       const competences = await user.competences().fetch()
+
       return competences.toJSON()
     },
+
     async role(userInJson) {
       const user = new User()
       user.newUp(userInJson)
       const role = await user.role().fetch()
+
       return role.toJson()
     }
   },
@@ -73,6 +77,7 @@ const resolvers = {
     async experience_years(competenceAsJson) {
       const competence = new Competence()
       competence.newUp(competenceAsJson)
+
       return competence.pivot.experience_years
     }
   }
