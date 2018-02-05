@@ -44,8 +44,6 @@ export default {
     emailOrUsername: '',
     password: ''
   }),
-  mounted () {
-  },
   filters: {
     lowerCase (data) {
       return data.toLowerCase()
@@ -61,7 +59,25 @@ export default {
   },
   methods: {
     async login () {
-      this.userId++
+      try {
+        const res = await this.$apollo.mutate({
+          mutation: gql`mutation ($username: String!, $password: String!) {
+            login(username: $username, password: $password) {
+              token
+            }
+          }`,
+          variables: {
+            username: this.emailOrUsername,
+            password: this.password
+          }
+        })
+
+        const { token } = res.data.login
+        localStorage.setItem('token', token)
+      } catch (e) {
+        // TODO: show an error message to the user
+        console.error(e)
+      }
     }
   }
 }
