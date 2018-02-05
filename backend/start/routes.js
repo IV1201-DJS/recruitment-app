@@ -33,7 +33,16 @@ Route.get('/debug', async ({ request }) => {
 })
 
 Route.post('/api/login', async ({ request, auth }) => {
-  return {token: await auth.attempt(username, password)}
+  const {
+    username,
+    password
+  } = request.only(['username', 'password'])
+
+  const { token } = await auth.attempt(username, password)
+
+  return {
+    token
+  }
 })
 
 Route.route('/graphql', ({ request, auth, response }) => {

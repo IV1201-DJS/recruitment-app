@@ -36,7 +36,7 @@
   </v-container>
 </template>
 <script>
-import gql from 'graphql-tag'
+import axios from 'axios'
 
 export default {
   data: () => ({
@@ -60,19 +60,12 @@ export default {
   methods: {
     async login () {
       try {
-        const res = await this.$apollo.mutate({
-          mutation: gql`mutation ($username: String!, $password: String!) {
-            login(username: $username, password: $password) {
-              token
-            }
-          }`,
-          variables: {
-            username: this.emailOrUsername,
-            password: this.password
-          }
+        const res = await axios.post('/api/login', {
+          username: this.emailOrUsername,
+          password: this.password
         })
 
-        const { token } = res.data.login
+        const { token } = res.data
         localStorage.setItem('token', token)
       } catch (e) {
         // TODO: show an error message to the user
