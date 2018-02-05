@@ -31,6 +31,14 @@ const resolvers = {
     async Competences(_, { name }) {
       const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
       return competences.toJSON()
+    },
+    async CurrentUser(_, { auth }) { 
+      try {
+        const user = await auth.getUser()
+        return user
+      } catch (error) {
+        throw new Error('Missing or invalid jwt token')
+      }
     }
   },
 
