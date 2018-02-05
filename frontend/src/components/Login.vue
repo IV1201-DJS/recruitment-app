@@ -36,7 +36,7 @@
   </v-container>
 </template>
 <script>
-import axios from 'axios'
+import { post } from '@/tools/abstractions'
 
 export default {
   data: () => ({
@@ -60,7 +60,7 @@ export default {
   methods: {
     async login () {
       try {
-        const res = await axios.post('/api/login', {
+        const res = await post('/api/login', {
           username: this.emailOrUsername,
           password: this.password
         })
