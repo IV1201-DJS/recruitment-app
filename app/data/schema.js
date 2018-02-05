@@ -56,6 +56,7 @@ const typeDefs = `
     User(id: ID): User
     Applications(competence_id: ID): [User]
     Competences(name: String): [Competence]
+    CurrentUser: User
   }
   type Mutation {
     createUser(username: String!, password: String!, email: String!, firstname: String!, lastname: String!, ssn: String!): User
