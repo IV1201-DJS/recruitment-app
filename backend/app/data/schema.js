@@ -52,13 +52,16 @@ const typeDefs = `
     from: String
     to: String
   }
+  type LoginResponse {
+    token: String
+  }
   type Query {
     User(id: ID): User
     Applications(competence_id: ID): [User]
     Competences(name: String): [Competence]
   }
   type Mutation {
-    login (username: String!, password: String!): String
+    login (username: String!, password: String!): LoginResponse
     createUser(username: String!, password: String!, email: String!, firstname: String!, lastname: String!, ssn: String!): User
   }
 `
