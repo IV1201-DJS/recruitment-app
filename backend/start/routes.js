@@ -22,16 +22,11 @@ Route.get('/', ({ request }) => {
   return { greeting: 'Hello world in JSON' }
 })
 
-Route.get('/debug', async ({ request }) => {
-  const user = await User.query()
-        .where({id: 5})
-        .with('role')
-        .with('availabilities')
-        .with('competences')
-        .first()
-    return user
-})
-
+/**
+ * Authenticate the user
+ *
+ * @returns A token used to authenticate the user via graphql
+ */
 Route.post('/api/login', async ({ request, auth }) => {
   const {
     username,
@@ -51,9 +46,8 @@ Route.route('/graphql', ({ request, auth, response }) => {
     context: { auth }
   }, request, response)
 }, ['GET', 'POST'])
-.middleware(['auth-jwt'])
+  .middleware(['auth-jwt'])
 
 Route.get('/graphiql', ({ request, response }) => {
   return GraphqlAdonis.graphiql({ endpointURL: '/graphql' }, request, response)
 })
-
