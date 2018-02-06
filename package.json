@@ -4,7 +4,7 @@
   "description": "Adonisjs boilerplate for API server with pre-configured JWT",
   "main": "index.js",
   "scripts": {
-    "dev": "adonis serve --dev -w **/**.gql",
+    "dev": "nodemon -e js,gql --exec 'adonis serve'",
     "start": "node server.js",
     "test": "node ace test"
   },
@@ -30,7 +30,9 @@
     "pg": "^7.4.1",
     "slugify": "^1.2.9"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.14.12"
+  },
   "autoload": {
     "App": "./app"
   }
