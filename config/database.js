@@ -72,7 +72,7 @@ module.exports = {
   pg: {
     client: 'pg',
     connection: {
-      host: Env.get('DB_HOST', HEROKU_POSTGRES.host),
+      host: Env.get('DB_HOST', HEROKU_POSTGRES.host.split(":")[0]),
       port: Env.get('DB_PORT', ''),
       user: Env.get('DB_USER', HEROKU_POSTGRES.username),
       password: Env.get('DB_PASSWORD', HEROKU_POSTGRES.password),
