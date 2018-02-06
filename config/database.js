@@ -2,6 +2,8 @@
 
 const Env = use('Env')
 const Helpers = use('Helpers')
+const Url = require('url-parse')
+const HEROKU_POSTGRES = new Url(Env.get('DATABASE_URL'))
 
 module.exports = {
   /*
@@ -70,11 +72,11 @@ module.exports = {
   pg: {
     client: 'pg',
     connection: {
-      host: Env.get('DB_HOST', 'localhost'),
+      host: Env.get('DB_HOST', HEROKU_POSTGRES.host.split(":")[0]),
       port: Env.get('DB_PORT', ''),
-      user: Env.get('DB_USER', 'root'),
-      password: Env.get('DB_PASSWORD', ''),
-      database: Env.get('DB_DATABASE', 'adonis')
+      user: Env.get('DB_USER', HEROKU_POSTGRES.username),
+      password: Env.get('DB_PASSWORD', HEROKU_POSTGRES.password),
+      database: Env.get('DB_DATABASE', HEROKU_POSTGRES.pathname.substr(1))
     },
     debug: Env.get('DB_DEBUG', false)
   },
