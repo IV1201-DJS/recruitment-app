@@ -44,6 +44,15 @@ const resolvers = {
   Mutation: {
     async createUser(obj, { username, password, email, firstname, lastname, ssn }) {
       return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2 })
+    },
+
+    async addCompetences(objc, { competenceID, experience_years }, { auth }) {
+      const user = await auth.getUser()
+      const res = await user.competences().attach(competenceID, row => {
+        row.experience_years = experience_years
+      })
+      
+      return user
     }
   },
 
