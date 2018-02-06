@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "adonis serve --dev",
-    "start": "node server.js",
+    "start": "node --harmony_proxies server.js",
     "test": "node ace test"
   },
   "keywords": [
