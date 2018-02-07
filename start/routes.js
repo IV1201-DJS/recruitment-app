@@ -18,6 +18,7 @@ const GraphqlAdonis = use('ApolloServer')
 const schema = require('../app/data/schema')
 const User = use('App/Models/User')
 
+
 Route.get('/', ({ request }) => {
   return { greeting: 'Hello world in JSON' }
 })
@@ -27,18 +28,15 @@ Route.get('/', ({ request }) => {
  *
  * @returns A token used to authenticate the user via graphql
  */
-Route.post('/api/login', async ({ request, auth }) => {
-  const {
-    username,
-    password
-  } = request.only(['username', 'password'])
+Route.post('/api/login', 'UserController.login')
 
-  const { token } = await auth.attempt(username, password)
 
-  return {
-    token
-  }
-})
+/**
+ * Create a new user
+ *
+ * @returns A User object
+ */
+Route.post('/api/register', 'UserController.store')
 
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({

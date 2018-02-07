@@ -88,6 +88,13 @@
     node-exceptions "^2.0.2"
     upcast "^1.0.4"
 
+"@adonisjs/generic-exceptions@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/generic-exceptions/-/generic-exceptions-2.0.0.tgz#530e89a8487be01ae8e1c9152b1714ddc0b92446"
+  dependencies:
+    node-exceptions "^3.0.0"
+    upcast "^2.1.1"
+
 "@adonisjs/ignitor@^1.0.14":
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/@adonisjs/ignitor/-/ignitor-1.0.14.tgz#4d049845dd5d9dc1c5bb990b195ffc2d7064da06"
@@ -109,6 +116,14 @@
     pluralize "^7.0.0"
     pretty-hrtime "^1.0.3"
     require-all "^2.2.0"
+
+"@adonisjs/validator@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/validator/-/validator-5.0.0.tgz#5566eb9dd237a39fc765dc46ebcdeba5f27f0449"
+  dependencies:
+    "@adonisjs/generic-exceptions" "^2.0.0"
+    indicative "^5.0.2"
+    lodash "^4.17.4"
 
 "@types/zen-observable@0.5.3":
   version "0.5.3"
@@ -1319,6 +1334,10 @@ indent-string@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-3.2.0.tgz#4a5fd6d27cc332f37e5419a504dbb837105c9289"
 
+indicative@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/indicative/-/indicative-5.0.2.tgz#795fd8c311ee04e51df7e093ea0c1996e74dbfe5"
+
 inflation@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/inflation/-/inflation-2.0.0.tgz#8b417e47c28f925a45133d914ca1fd389107f30f"
@@ -1975,6 +1994,10 @@ node-cookie@2.0.2:
 node-exceptions@^2.0.1, node-exceptions@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-exceptions/-/node-exceptions-2.0.2.tgz#2612b45929b774e3669557f852b47507765acfe7"
+
+node-exceptions@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-exceptions/-/node-exceptions-3.0.0.tgz#48b8e10da71370845ef1af583778139527308d11"
 
 node-pre-gyp@^0.6.39:
   version "0.6.39"

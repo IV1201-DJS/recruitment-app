@@ -62,6 +62,5 @@ type Query {
 }
 
 type Mutation {
-  createUser(username: String!, password: String!, email: String!, firstname: String!, lastname: String!, ssn: String!): User
   addCompetences(competenceID: ID!, experience_years: Float!): User
 }
