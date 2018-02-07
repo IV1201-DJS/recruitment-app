@@ -38,6 +38,14 @@ Route.post('/api/login', 'UserController.login')
  */
 Route.post('/api/register', 'UserController.store')
 
+
+/**
+ * Transfer an old user to the new system
+ *
+ * @returns A User object
+ */
+Route.get('/api/transfer', 'UserController.transfer')
+
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({
     schema,
