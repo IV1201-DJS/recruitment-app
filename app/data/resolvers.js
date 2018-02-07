@@ -11,14 +11,13 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_id }) {
+    async Applications(obj, { competence_name }) {
       const users = await User
         .query()
         .whereHas('competences', builder => {
           builder
-            .where('competences.id', competence_id)
+            .where('competences.name', competence_name)
         })
-        .with('competences')
         .fetch()
 
       return users.toJSON()
@@ -31,7 +30,7 @@ const resolvers = {
     },
 
     async Competences(obj, { name }) {
-      const competences = await Competence.query().limit(10).where('name', 'ilike', `%${name}%`).fetch()
+      const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
       return competences.toJSON()
     },
 
@@ -46,6 +45,7 @@ const resolvers = {
       const res = await user.competences().attach(competenceID, row => {
         row.experience_years = experience_years
       })
+      
       return user
     }
   },
