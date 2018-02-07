@@ -55,10 +55,11 @@ type Period {
 }
 
 type Query {
-  User(id: ID): User
-  Applications(competence_id: ID): [User]
-  Competences(name: String): [Competence]
+  User(id: ID!): User
+  Applications(competence_id: ID!): [User]
+  Competences(name: String!): [Competence]
   CurrentUser: User
+
 }
 
 type Mutation {

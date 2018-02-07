@@ -31,8 +31,7 @@ const resolvers = {
     },
 
     async Competences(obj, { name }) {
-      const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
-
+      const competences = await Competence.query().limit(10).where('name', 'ilike', `%${name}%`).fetch()
       return competences.toJSON()
     },
 
