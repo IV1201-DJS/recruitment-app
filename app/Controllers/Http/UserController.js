@@ -22,6 +22,9 @@ class UserController {
       // TODO: Handle validation fail
       return validation.messages()
     }
+    
+    // TODO: LEIFY IT UP
+    userData.role_id = 1
 
     return await User.create(userData)
   }

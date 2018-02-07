@@ -12,7 +12,7 @@ class UserSchema extends Schema {
       table.string('firstname').notNullable()
       table.string('lastname').notNullable()
       table.string('ssn').notNullable()
-      table.integer('role_id').unsigned().references('id').inTable('roles').onDelete('CASCADE')
+      table.integer('role_id').unsigned().references('id').inTable('roles').onDelete('CASCADE').notNullable()
       table.timestamps()
       table.timestamp('deleted_at').nullable()
     })
