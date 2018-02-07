@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "production": "node server.js",
-    "dev": "nodemon -e js,gql --exec 'adonis serve'",
+    "dev": "nodemon -e js,gql --exec 'node server.js'",
     "test": "node ace test"
   },
   "keywords": [
