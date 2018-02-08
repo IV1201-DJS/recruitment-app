@@ -15,7 +15,7 @@
 
 const Route = use('Route')
 const GraphqlAdonis = use('ApolloServer')
-const schema = require('../app/data/schema')
+const schema = use('App/Data/GraphQL/schema')
 const User = use('App/Models/User')
 
 

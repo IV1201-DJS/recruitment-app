@@ -3,8 +3,8 @@
 const Database = use('Database')
 
 class LegacyDatabaseHandler {
-  get db () {
-    return Database.connection('legacy')
+  constructor () {
+    this.db = Database.connection('legacy')
   }
 
   async getUserByLogin(username, password) {
