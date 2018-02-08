@@ -4,15 +4,27 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
 const UserMigrator = use('App/Services/UserMigrator')
-const LegacyDatabse = use('App/Services/LegacyDatabaseHandler')
+const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
 const LoginResponse = use('App/Data/REST/LoginResponse')
 
+
+/**
+ * Controller for creating and authenticating users
+ * 
+ * @class UserController
+ */
 class UserController {
   constructor () {
-    this.migrator = new UserMigrator()
-    this.legacyDB = new LegacyDatabse()
+    this.legacyDB = new LegacyDatabase()
   }
 
+  /**
+   * Stores a user in the database
+   * 
+   * @param {Object} { request } 
+   * @returns User
+   * @memberof UserController
+   */
   async store ({ request }) {
     const rules = {
       username: 'required|unique:users,username',
@@ -23,8 +35,7 @@ class UserController {
       ssn: 'required|unique:users,ssn' 
     }
 
-    const userData = request.only(['username', 'password', 'email', 'firstname', 'lastname', 'ssn'])
-
+    const userData = request.only(Object.keys(rules))
     const validation = await validate(userData, rules)
 
     if (validation.fails()) {
@@ -37,8 +48,16 @@ class UserController {
     return await User.create(userData)
   }
 
+  /**
+   * Attempts to log in the user if they exist.
+   * If not, searches legacy database for old user and attempts migration.
+   * 
+   * @param {Object} { request, response, auth } 
+   * @returns LoginResponse
+   * @memberof UserController
+   */
   async login ({ request, response, auth }) {
-    const { username, password } = request.only(['username', 'password']) // TODO: .all()
+    const { username, password } = request.all()
 
     try {
       const { token } = await auth.attempt(username, password)
@@ -60,14 +79,21 @@ class UserController {
     }
   }
 
+  /**
+   * Attempts to migrate a user.
+   * 
+   * @param {Object} legacyUserData 
+   * @memberof UserController
+   */
   async handleUserMigration (legacyUserData) {
+    const migrator = new UserMigrator()
     const isComplete = await this.migrator.isCompleteUser(legacyUserData)
     if (!isComplete) {
       const legacyUser = new LegacyUser()
       legacyUser.newUp(legacyUserData)
       throw legacyUser.toJSON()
     }
-    await this.migrator.migrate(legacyUserData)
+    await migrator.migrate(legacyUserData)
   }
 }
 

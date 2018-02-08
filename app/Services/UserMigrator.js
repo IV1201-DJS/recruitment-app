@@ -6,12 +6,24 @@ const Availability = use('App/Models/Availability')
 const LegacyDatabaseHandler = use('App/Services/LegacyDatabaseHandler')
 const Hash = use('Hash')
 
+/**
+ * Service for migrating old users to the new database
+ * 
+ * @class UserMigrator
+ */
 class UserMigrator {
   constructor () {
     this.legacyDB = new LegacyDatabaseHandler()
     this.newDB = use('Database')
   }
 
+  /**
+   * Determines if a legacy user has a complete profile
+   * 
+   * @param {Object} legacyData 
+   * @returns boolean
+   * @memberof UserMigrator
+   */
   async isCompleteUser(legacyData) {
     const validation = await validate(legacyData, {
       name: 'required',
@@ -24,6 +36,13 @@ class UserMigrator {
     return !validation.fails()
   }
 
+  /**
+   * Migrates a complete user, with competences
+   * and availabilities to the new database
+   * 
+   * @param {Object} legacyData 
+   * @memberof UserMigrator
+   */
   async migrate (legacyData) {
     await this.newDB.transaction(async trx => {
       const user = await this.migrateUser(trx, legacyData)
@@ -35,6 +54,14 @@ class UserMigrator {
     })
   }
 
+  /**
+   * Migrates a complete user to the new database
+   * 
+   * @param {Transaction} trx 
+   * @param {Object} legacyData 
+   * @returns User
+   * @memberof UserMigrator
+   */
   async migrateUser (trx, legacyData) {
     const userMapping = {
       firstname: legacyData.name,
@@ -51,6 +78,14 @@ class UserMigrator {
     return await trx.table('users').where({ id }).first()
   }
 
+  /**
+   * Migrates the availabilites of a legacy user to the new database
+   * 
+   * @param {Transaction} trx 
+   * @param {User} user 
+   * @param {Object} legacyData 
+   * @memberof UserMigrator
+   */
   async migrateAvailabilities (trx, user, legacyData) {
     const availabilities = await this.legacyDB.getAvailabilities(legacyData.person_id)
     for (let a of availabilities) {
@@ -63,6 +98,14 @@ class UserMigrator {
     }
   }
   
+  /**
+   * Migrates the competences of a legacy user to the new database
+   * 
+   * @param {Transaction} trx 
+   * @param {User} user 
+   * @param {Object} legacyData 
+   * @memberof UserMigrator
+   */
   async migrateCompetences (trx, user, legacyData) {
     const competenceProfiles = await this.legacyDB.getCompetenceProfiles(legacyData.person_id)
     for (let p of competenceProfiles) {

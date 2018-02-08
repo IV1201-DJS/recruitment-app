@@ -3,12 +3,22 @@
 const Model = use('Model')
 
 class Competence extends Model {
-  static boot () {
-    super.boot()
-  }
+  /**
+   * Retrieves all translations for this competence
+   * 
+   * @returns {Collection}
+   * @memberof Competence
+   */
   translations () {
     return this.hasMany('App/Models/CompetenceTranslation')
   }
+
+  /**
+   * Retrieves all users with this competence
+   * 
+   * @returns {Collection}
+   * @memberof Competence
+   */
   users () {
     return this
       .belongsToMany('App/Models/User')
