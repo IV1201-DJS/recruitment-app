@@ -82,6 +82,12 @@ const resolvers = {
       competence.newUp(competenceAsJson)
 
       return competence.pivot.experience_years
+    },
+
+    async name(competenceAsJson, args, { locale }) {
+      const competence = new Competence()
+      competence.newUp(competenceAsJson)
+      return await competence.translation(locale)
     }
   }
 }
