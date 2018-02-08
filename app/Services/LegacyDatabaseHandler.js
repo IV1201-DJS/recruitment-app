@@ -8,6 +8,10 @@ const Database = use('Database')
  * @class LegacyDatabaseHandler
  */
 class LegacyDatabaseHandler {
+  /**
+   * Creates an instance of LegacyDatabaseHandler.
+   * @memberof LegacyDatabaseHandler
+   */
   constructor () {
     this.db = Database.connection('legacy')
   }

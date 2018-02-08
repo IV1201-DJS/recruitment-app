@@ -48,7 +48,10 @@ Route.post('/api/register', 'UserController.store')
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({
     schema,
-    context: { auth }
+    context: { 
+      auth, 
+      locale: request.header('locale')
+    }
   }, request, response)
 }, ['GET', 'POST'])
   .middleware(['auth-jwt'])

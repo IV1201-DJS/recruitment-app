@@ -12,6 +12,10 @@ const Hash = use('Hash')
  * @class UserMigrator
  */
 class UserMigrator {
+  /**
+   * Creates an instance of UserMigrator.
+   * @memberof UserMigrator
+   */
   constructor () {
     this.legacyDB = new LegacyDatabaseHandler()
     this.newDB = use('Database')
