@@ -17,7 +17,7 @@ const Competence = use('App/Models/Competence')
 class UsercompetenceSeeder {
   async run () {
     const ids = [1,2,3,4,5,6,7,8,9,10]
-    ids.forEach(async id => {
+    await ids.forEach(async id => {
       const user = await User.find(id)
       await user.competences().attach([id, id+1], row => {
         row.experience_years = 1.0
