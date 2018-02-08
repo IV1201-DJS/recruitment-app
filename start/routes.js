@@ -23,6 +23,7 @@ Route.get('/', ({ request }) => {
   return { greeting: 'Hello world in JSON' }
 })
 
+
 /**
  * Authenticate the user
  *
@@ -40,12 +41,10 @@ Route.post('/api/register', 'UserController.store')
 
 
 /**
- * Transfer an old user to the new system
+ * Bind jwt-protected graphql endpoint
  *
- * @returns A User object
+ * @returns Requested JSON-data
  */
-Route.get('/api/transfer', 'UserController.transfer')
-
 Route.route('/graphql', ({ request, auth, response }) => {
   return GraphqlAdonis.graphql({
     schema,
@@ -54,6 +53,12 @@ Route.route('/graphql', ({ request, auth, response }) => {
 }, ['GET', 'POST'])
   .middleware(['auth-jwt'])
 
+
+  /**
+ * Bind graphiql endpoint
+ *
+ * @returns Requested JSON-data
+ */
 Route.get('/graphiql', ({ request, response }) => {
   return GraphqlAdonis.graphiql({ endpointURL: '/graphql' }, request, response)
 })

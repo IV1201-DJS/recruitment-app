@@ -38,7 +38,7 @@ class UserController {
   }
 
   async login ({ request, response, auth }) {
-    const { username, password } = request.only(['username', 'password'])
+    const { username, password } = request.only(['username', 'password']) // TODO: .all()
 
     try {
       const { token } = await auth.attempt(username, password)
@@ -46,22 +46,18 @@ class UserController {
     } catch (noUser) {
       const legacyUserData = await this.legacyDB.getUserByLogin(username, password)
       if (!legacyUserData) {
-        return new LoginResponse(response, 401, { message: 'The username or password was incorrect' })
+        return new LoginResponse(response, 401, { 
+          message: 'The username or password was incorrect' 
+        })
       }
       try {
         await this.handleUserMigration(legacyUserData)
         const { token } = await auth.attempt(username, password)
         return new LoginResponse(response, 200, { token })
-      } catch (legacyUser) {
+      } catch (legacyUser) { // TODO: re-think this because its not very safe
         return new LoginResponse(response, 409, { legacyUser })
       }
     }
-  }
-
-  async transfer ({ request, response }) {
-    const hello = await this.legacyDB.getUserByLogin('borsg','wl9nk23a')
-    console.log(hello)
-    return response.send(hello)
   }
 
   async handleUserMigration (legacyUserData) {
