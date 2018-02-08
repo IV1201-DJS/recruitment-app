@@ -50,7 +50,7 @@ Route.route('/graphql', ({ request, auth, response }) => {
     schema,
     context: { 
       auth, 
-      locale: request.header('locale') || 'en'
+      locale: request.header('locale')
     }
   }, request, response)
 }, ['GET', 'POST'])

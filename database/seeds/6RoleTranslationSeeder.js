@@ -15,7 +15,7 @@ const RoleTranslation = use('App/Models/RoleTranslation')
 
 class RoleTranslationSeeder {
   async run () {
-    const roles = [1, 2]
+    const roles = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const langs = [1, 2, 3, 4, 5]
     await roles.forEach(async role_id => {
       await langs.forEach(async language_id => {

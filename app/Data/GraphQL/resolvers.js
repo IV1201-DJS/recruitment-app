@@ -72,7 +72,7 @@ const resolvers = {
       user.newUp(userInJson)
       const role = await user.role().fetch()
 
-      return role.toJson()
+      return role.toJSON()
     }
   },
 
@@ -87,7 +87,17 @@ const resolvers = {
     async name(competenceAsJson, args, { locale }) {
       const competence = new Competence()
       competence.newUp(competenceAsJson)
-      return await competence.translation(locale)
+      const translation = await competence.translatedTo(locale)
+      return translation || competence.name
+    }
+  },
+
+  Role: {
+    async name(roleAsJson, args, { locale }) {
+      const role = new Role()
+      role.newUp(roleAsJson)
+      const translation = await role.translatedTo(locale)
+      return translation || role.name
     }
   }
 }

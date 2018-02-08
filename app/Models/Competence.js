@@ -26,19 +26,18 @@ class Competence extends Model {
       .withPivot(['experience_years'])
   }
 
-  async translation (locale) {
+  async translatedTo (locale) {
     let translator
     try {
       translator = await createTranslator(locale)
     } catch (error) {
-      console.log(error)
-      return this.name
+      return undefined
     }
     const competenceTranslation = await translator.translateCompetence(this)
     if (competenceTranslation) {
       return competenceTranslation.translation
     }
-    return this.name
+    return undefined
   }
 }
 
