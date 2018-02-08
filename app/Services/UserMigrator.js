@@ -4,14 +4,16 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Availability = use('App/Models/Availability')
 const LegacyDatabaseHandler = use('App/Services/LegacyDatabaseHandler')
+const Hash = use('Hash')
 
 class UserMigrator {
   constructor () {
     this.legacyDB = new LegacyDatabaseHandler()
+    this.newDB = use('Database')
   }
 
-  async isCompleteUser(userData) {
-    const validation = await validate(userData, {
+  async isCompleteUser(legacyData) {
+    const validation = await validate(legacyData, {
       name: 'required',
       surname: 'required',
       ssn: 'required',
@@ -22,42 +24,55 @@ class UserMigrator {
     return !validation.fails()
   }
 
-  async migrate (userData) {
-    const userMapping = {
-      firstname: userData.name,
-      lastname: userData.surname,
-      ssn: userData.ssn,
-      email: userData.email,
-      password: userData.password,
-      role_id: userData.role_id,
-      username: userData.username
-    }
-    const user = await User.create(userMapping)
-    await this.attachCompetences(user, userData)
-    await this.saveAvailabilities(user, userData)
+  async migrate (legacyData) {
+    await this.newDB.transaction(async trx => {
+      const user = await this.migrateUser(trx, legacyData)
+      console.log('user migrated')
+      await this.migrateCompetences(trx, user, legacyData)
+      console.log('comps migrated')
+      await this.migrateAvailabilities(trx, user, legacyData)
+      console.log('avails migrated')
+    })
   }
 
-  async saveAvailabilities (user, userData) {
-    const availabilities = await this.legacyDB.getAvailabilities(userData.person_id)
-    const mappedAvailabilities = availabilities.map(a => {
-      const availability = new Availability()
-      availability.from = a.from_date
-      availability.to = a.to_date
-      return availability
-    })
-    console.log('jasvar')
-    await user.availabilities().saveMany(mappedAvailabilities)
+  async migrateUser (trx, legacyData) {
+    const userMapping = {
+      firstname: legacyData.name,
+      lastname: legacyData.surname,
+      ssn: legacyData.ssn,
+      email: legacyData.email,
+      password: await Hash.make(legacyData.password),
+      role_id: legacyData.role_id,
+      username: legacyData.username,
+      created_at: new Date().toLocaleString('sv-SE'),
+      updated_at: new Date().toLocaleString('sv-SE')
+    }
+    const [ id ] = await trx.insert(userMapping).into('users').returning('id')
+    return await trx.table('users').where({ id }).first()
+  }
+
+  async migrateAvailabilities (trx, user, legacyData) {
+    const availabilities = await this.legacyDB.getAvailabilities(legacyData.person_id)
+    for (let a of availabilities) {
+      const availabilityMapping = {
+        user_id: user.id,
+        from: a.from_date.toLocaleString('sv-SE'),
+        to: a.to_date.toLocaleString('sv-SE')
+      }
+      await trx.insert(availabilityMapping).into('availabilities')
+    }
   }
   
-  async attachCompetences (user, userData) {
-    const competenceProfiles = await this.legacyDB.getCompetenceProfiles(userData.person_id)
-    const competenceLookup = {}
-    competenceProfiles.forEach(p => {
-      competenceLookup[p.competence_id] = p.years_of_experience
-    })
-    await user.competences().attach(Object.keys(competenceLookup), row => {
-      row.experience_years = competenceLookup[row.competence_id]
-    })
+  async migrateCompetences (trx, user, legacyData) {
+    const competenceProfiles = await this.legacyDB.getCompetenceProfiles(legacyData.person_id)
+    for (let p of competenceProfiles) {
+      const pivotMapping = {
+        user_id: user.id,
+        competence_id: p.competence_id,
+        experience_years: p.years_of_experience
+      }
+      await trx.insert(pivotMapping).into('competence_user')
+    }
   }
 }
 
