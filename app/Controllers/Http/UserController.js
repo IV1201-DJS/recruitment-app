@@ -21,7 +21,7 @@ class UserController {
   /**
    * Stores a user in the database
    * 
-   * @param {any} { request } 
+   * @param {Object} { request } 
    * @returns User
    * @memberof UserController
    */
@@ -52,7 +52,7 @@ class UserController {
    * Attempts to log in the user if they exist.
    * If not, searches legacy database for old user and attempts migration.
    * 
-   * @param {any} { request, response, auth } 
+   * @param {Object} { request, response, auth } 
    * @returns LoginResponse
    * @memberof UserController
    */
@@ -82,7 +82,7 @@ class UserController {
   /**
    * Attempts to migrate a user.
    * 
-   * @param {any} legacyUserData 
+   * @param {Object} legacyUserData 
    * @memberof UserController
    */
   async handleUserMigration (legacyUserData) {
