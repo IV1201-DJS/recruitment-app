@@ -1,7 +1,6 @@
 'use strict'
 
 const Model = use('Model')
-const { createTranslator } = use('App/Services/Translator')
 
 class Role extends Model {
   /**
@@ -21,21 +20,19 @@ class Role extends Model {
    * @memberof Role
    */
   translations () {
-    return this.hasMany('App/Model/RoleTranslation')
+    return this.hasMany('App/Models/RoleTranslation')
   }
 
-  async translatedTo (locale) {
-    let translator
-    try {
-      translator = await createTranslator(locale)
-    } catch (error) {
-      return undefined
-    }
-    const roleTranslation = await translator.translateRole(this)
-    if (roleTranslation) {
-      return roleTranslation.translation
-    }
-    return undefined
+  /**
+   * Translates the role's name into another language
+   * 
+   * @param {Language} language 
+   * @returns String
+   * @memberof Role
+   */
+  async translatedTo (language) {
+    const { translation } = await this.translations().where('language_id', language.id).first()
+    return translation
   }
 }
 
