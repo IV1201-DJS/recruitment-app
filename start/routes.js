@@ -14,6 +14,7 @@
 */
 
 const Route = use('Route')
+const Language = use('App/Models/Language')
 const GraphqlAdonis = use('ApolloServer')
 const schema = use('App/Data/GraphQL/schema')
 const User = use('App/Models/User')
@@ -45,12 +46,14 @@ Route.post('/api/register', 'UserController.store')
  *
  * @returns Requested JSON-data
  */
-Route.route('/graphql', ({ request, auth, response }) => {
+Route.route('/graphql', async ({ request, auth, response }) => {
+  const locale = request.header('locale')
+  const language = await new Language().setOrDefault(locale)
   return GraphqlAdonis.graphql({
     schema,
     context: { 
       auth, 
-      locale: request.header('locale')
+      language
     }
   }, request, response)
 }, ['GET', 'POST'])

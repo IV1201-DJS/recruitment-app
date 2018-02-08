@@ -10,7 +10,7 @@ class RoleTranslation extends Model {
    * @memberof RoleTranslation
    */
   language () {
-    return this.belongsTo('App/Model/Language')
+    return this.belongsTo('App/Models/Language')
   }
 
   /**
@@ -20,7 +20,7 @@ class RoleTranslation extends Model {
    * @memberof RoleTranslation
    */
   role () {
-    return this.belongsTo('App/Model/Role')
+    return this.belongsTo('App/Models/Role')
   }
 }
 

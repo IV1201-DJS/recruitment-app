@@ -1,7 +1,7 @@
 'use strict'
 
 const Model = use('Model')
-const { createTranslator } = use('App/Services/Translator')
+const Language = use('App/Models/Language')
 
 class Competence extends Model {
   /**
@@ -26,18 +26,9 @@ class Competence extends Model {
       .withPivot(['experience_years'])
   }
 
-  async translatedTo (locale) {
-    let translator
-    try {
-      translator = await createTranslator(locale)
-    } catch (error) {
-      return undefined
-    }
-    const competenceTranslation = await translator.translateCompetence(this)
-    if (competenceTranslation) {
-      return competenceTranslation.translation
-    }
-    return undefined
+  async translatedTo (language) {
+    const { translation } = await this.translations().where('language_id', language.id).first()
+    return translation
   }
 }
 

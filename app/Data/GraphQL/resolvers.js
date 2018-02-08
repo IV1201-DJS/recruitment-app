@@ -84,19 +84,19 @@ const resolvers = {
       return competence.pivot.experience_years
     },
 
-    async name(competenceAsJson, args, { locale }) {
+    async name(competenceAsJson, args, { language }) {
       const competence = new Competence()
       competence.newUp(competenceAsJson)
-      const translation = await competence.translatedTo(locale)
+      const translation = await competence.translatedTo(language)
       return translation || competence.name
     }
   },
 
   Role: {
-    async name(roleAsJson, args, { locale }) {
+    async name(roleAsJson, args, { language }) {
       const role = new Role()
       role.newUp(roleAsJson)
-      const translation = await role.translatedTo(locale)
+      const translation = await role.translatedTo(language)
       return translation || role.name
     }
   }
