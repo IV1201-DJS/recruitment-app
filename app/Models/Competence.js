@@ -26,6 +26,13 @@ class Competence extends Model {
       .withPivot(['experience_years'])
   }
 
+  /**
+   * Translates the competence's name into another language
+   * 
+   * @param {Language} language 
+   * @returns String
+   * @memberof Competence
+   */
   async translatedTo (language) {
     const { translation } = await this.translations().where('language_id', language.id).first()
     return translation

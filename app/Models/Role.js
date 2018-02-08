@@ -23,6 +23,13 @@ class Role extends Model {
     return this.hasMany('App/Models/RoleTranslation')
   }
 
+  /**
+   * Translates the role's name into another language
+   * 
+   * @param {Language} language 
+   * @returns String
+   * @memberof Role
+   */
   async translatedTo (language) {
     const { translation } = await this.translations().where('language_id', language.id).first()
     return translation
