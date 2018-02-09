@@ -11,14 +11,13 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_id }) {
+    async Applications(obj, { competence_name }) {
       const users = await User
         .query()
         .whereHas('competences', builder => {
           builder
-            .where('competences.id', competence_id)
+            .where('competences.name', competence_name)
         })
-        .with('competences')
         .fetch()
 
       return users.toJSON()
@@ -32,7 +31,6 @@ const resolvers = {
 
     async Competences(obj, { name }) {
       const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
-
       return competences.toJSON()
     },
 
@@ -42,10 +40,6 @@ const resolvers = {
   },
 
   Mutation: {
-    async createUser(obj, { username, password, email, firstname, lastname, ssn }) {
-      return await User.create({ username, password, email, firstname, lastname, ssn, role_id: 2 })
-    },
-
     async addCompetences(objc, { competenceID, experience_years }, { auth }) {
       const user = await auth.getUser()
       const res = await user.competences().attach(competenceID, row => {
@@ -78,7 +72,7 @@ const resolvers = {
       user.newUp(userInJson)
       const role = await user.role().fetch()
 
-      return role.toJson()
+      return role.toJSON()
     }
   },
 
@@ -88,6 +82,22 @@ const resolvers = {
       competence.newUp(competenceAsJson)
 
       return competence.pivot.experience_years
+    },
+
+    async name(competenceAsJson, args, { language }) {
+      const competence = new Competence()
+      competence.newUp(competenceAsJson)
+      const translation = await competence.translatedTo(language)
+      return translation || competence.name
+    }
+  },
+
+  Role: {
+    async name(roleAsJson, args, { language }) {
+      const role = new Role()
+      role.newUp(roleAsJson)
+      const translation = await role.translatedTo(language)
+      return translation || role.name
     }
   }
 }

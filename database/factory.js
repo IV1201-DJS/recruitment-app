@@ -49,5 +49,22 @@ Factory.blueprint('App/Models/Availability', (faker) => {
     from: faker.date({year: 2017}),
     to: faker.date({year: 2018})
   }
+})
 
+Factory.blueprint('App/Models/Language', (faker) => {
+  return {
+    name: faker.country({full: true})
+  }
+})
+
+Factory.blueprint('App/Models/RoleTranslation', (faker) => {
+  return {
+    translation: faker.word()
+  }
+})
+
+Factory.blueprint('App/Models/CompetenceTranslation', (faker) => {
+  return {
+    translation: faker.last()
+  }
 })

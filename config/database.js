@@ -59,6 +59,30 @@ module.exports = {
     debug: Env.get('DB_DEBUG', false)
   },
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | Legacy
+  |--------------------------------------------------------------------------
+  |
+  | Here we define connection settings for MySQL database.
+  |
+  | npm i --save mysql
+  |
+  */
+  legacy: {
+    client: Env.get('LEGACY_DB_CLIENT', 'mysql'),
+    connection: {
+      host: Env.get('LEGACY_DB_HOST', 'localhost'),
+      port: Env.get('LEGACY_DB_PORT', ''),
+      user: Env.get('LEGACY_DB_USER', 'root'),
+      password: Env.get('LEGACY_DB_PASSWORD', ''),
+      database: Env.get('LEGACY_DB_DATABASE', 'adonis')
+    },
+    debug: Env.get('LEGACY_DB_DEBUG', false)
+  },
+
+
   /*
   |--------------------------------------------------------------------------
   | PostgreSQL

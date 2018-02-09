@@ -14,40 +14,57 @@
 */
 
 const Route = use('Route')
+const Language = use('App/Models/Language')
 const GraphqlAdonis = use('ApolloServer')
-const schema = require('../app/data/schema')
+const schema = use('App/Data/GraphQL/schema')
 const User = use('App/Models/User')
+
 
 Route.get('/', ({ request }) => {
   return { greeting: 'Hello world in JSON' }
 })
+
 
 /**
  * Authenticate the user
  *
  * @returns A token used to authenticate the user via graphql
  */
-Route.post('/api/login', async ({ request, auth }) => {
-  const {
-    username,
-    password
-  } = request.only(['username', 'password'])
+Route.post('/api/login', 'UserController.login')
 
-  const { token } = await auth.attempt(username, password)
 
-  return {
-    token
-  }
-})
+/**
+ * Create a new user
+ *
+ * @returns A User object
+ */
+Route.post('/api/register', 'UserController.store')
 
-Route.route('/graphql', ({ request, auth, response }) => {
+
+/**
+ * Bind jwt-protected graphql endpoint
+ *
+ * @returns Requested JSON-data
+ */
+Route.route('/graphql', async ({ request, auth, response }) => {
+  const locale = request.header('locale')
+  const language = await new Language().setOrDefault(locale)
   return GraphqlAdonis.graphql({
     schema,
-    context: { auth }
+    context: { 
+      auth, 
+      language
+    }
   }, request, response)
 }, ['GET', 'POST'])
   .middleware(['auth-jwt'])
 
+
+  /**
+ * Bind graphiql endpoint
+ *
+ * @returns Requested JSON-data
+ */
 Route.get('/graphiql', ({ request, response }) => {
   return GraphqlAdonis.graphiql({ endpointURL: '/graphql' }, request, response)
 })

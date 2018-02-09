@@ -3,28 +3,36 @@
 const Model = use('Model')
 
 class User extends Model {
+  /**
+   * Retrieves the user's availabilities
+   * 
+   * @returns {Collection}
+   * @memberof User
+   */
   availabilities () {
     return this.hasMany('App/Models/Availability')
   }
+
+  /**
+   * Retrieves the user's competences
+   * 
+   * @returns {Collection}
+   * @memberof User
+   */
   competences () {
     return this
       .belongsToMany('App/Models/Competence')
       .withPivot(['experience_years'])
   }
+
+  /**
+   * Retrieves the user's role
+   * 
+   * @returns {Role}
+   * @memberof User
+   */
   role () {
     return this.belongsTo('App/Models/Role')
-  }
-  static boot () {
-    super.boot()
-
-    /**
-     * A hook to hash the user password before saving
-     * it to the database.
-     *
-     * Look at `app/Models/Hooks/User.js` file to
-     * check the hashPassword method
-     */
-     this.addHook('beforeCreate', 'User.hashPassword')
   }
 
   /**
@@ -32,13 +40,17 @@ class User extends Model {
    * work. Since features like `refreshTokens` or
    * `rememberToken` will be saved inside the
    * tokens table.
-   *
-   * @method tokens
-   *
-   * @return {Object}
+   * 
+   * @returns {Object}
+   * @memberof User
    */
   tokens () {
     return this.hasMany('App/Models/Token')
+  }
+
+  static boot () {
+    super.boot()
+    this.addHook('beforeCreate', 'User.hashPassword')
   }
 }
 

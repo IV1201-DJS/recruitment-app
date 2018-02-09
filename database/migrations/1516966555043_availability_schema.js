@@ -6,7 +6,7 @@ class AvailabilitySchema extends Schema {
   up () {
     this.create('availabilities', (table) => {
       table.increments()
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE').notNullable()
       table.timestamp('from').notNullable()
       table.timestamp('to').notNullable()
       table.timestamps()

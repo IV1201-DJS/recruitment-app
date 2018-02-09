@@ -88,6 +88,13 @@
     node-exceptions "^2.0.2"
     upcast "^1.0.4"
 
+"@adonisjs/generic-exceptions@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/generic-exceptions/-/generic-exceptions-2.0.0.tgz#530e89a8487be01ae8e1c9152b1714ddc0b92446"
+  dependencies:
+    node-exceptions "^3.0.0"
+    upcast "^2.1.1"
+
 "@adonisjs/ignitor@^1.0.14":
   version "1.0.14"
   resolved "https://registry.yarnpkg.com/@adonisjs/ignitor/-/ignitor-1.0.14.tgz#4d049845dd5d9dc1c5bb990b195ffc2d7064da06"
@@ -109,6 +116,14 @@
     pluralize "^7.0.0"
     pretty-hrtime "^1.0.3"
     require-all "^2.2.0"
+
+"@adonisjs/validator@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/validator/-/validator-5.0.0.tgz#5566eb9dd237a39fc765dc46ebcdeba5f27f0449"
+  dependencies:
+    "@adonisjs/generic-exceptions" "^2.0.0"
+    indicative "^5.0.2"
+    lodash "^4.17.4"
 
 "@types/zen-observable@0.5.3":
   version "0.5.3"
@@ -337,6 +352,10 @@ bcrypt-pbkdf@^1.0.0:
 bcryptjs@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
+
+bignumber.js@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.4.tgz#7c40f5abcd2d6623ab7b99682ee7db81b11889a4"
 
 binary-extensions@^1.0.0:
   version "1.11.0"
@@ -1319,6 +1338,10 @@ indent-string@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-3.2.0.tgz#4a5fd6d27cc332f37e5419a504dbb837105c9289"
 
+indicative@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/indicative/-/indicative-5.0.2.tgz#795fd8c311ee04e51df7e093ea0c1996e74dbfe5"
+
 inflation@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/inflation/-/inflation-2.0.0.tgz#8b417e47c28f925a45133d914ca1fd389107f30f"
@@ -1940,6 +1963,15 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
+mysql@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.15.0.tgz#ea16841156343e8f2e47fc8985ec41cdd9573b5c"
+  dependencies:
+    bignumber.js "4.0.4"
+    readable-stream "2.3.3"
+    safe-buffer "5.1.1"
+    sqlstring "2.3.0"
+
 nan@^2.3.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
@@ -1975,6 +2007,10 @@ node-cookie@2.0.2:
 node-exceptions@^2.0.1, node-exceptions@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-exceptions/-/node-exceptions-2.0.2.tgz#2612b45929b774e3669557f852b47507765acfe7"
+
+node-exceptions@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-exceptions/-/node-exceptions-3.0.0.tgz#48b8e10da71370845ef1af583778139527308d11"
 
 node-pre-gyp@^0.6.39:
   version "0.6.39"
@@ -2746,6 +2782,10 @@ split@^1.0.0:
   resolved "https://registry.yarnpkg.com/split/-/split-1.0.1.tgz#605bd9be303aa59fb35f9229fbea0ddec9ea07d9"
   dependencies:
     through "2"
+
+sqlstring@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.0.tgz#525b8a4fd26d6f71aa61e822a6caf976d31ad2a8"
 
 sshpk@^1.7.0:
   version "1.13.1"
