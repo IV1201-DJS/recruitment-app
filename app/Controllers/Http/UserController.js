@@ -43,7 +43,7 @@ class UserController {
     }
     
     // TODO: LEIFY IT UP
-    userData.role_id = 1
+    // userData.role_id = 1
 
     return await User.create(userData)
   }
@@ -59,6 +59,16 @@ class UserController {
   async login ({ request, response, auth }) {
     const { username, password } = request.all()
 
+    const rules = {
+      username: 'required|exists:users,username',
+      password: 'required'
+    }
+    const validation = await validateAll({ username, password }, rules)
+
+    if (validation.fails()) {
+      return validation.messages()
+    }
+    
     try {
       const { token } = await auth.attempt(username, password)
       return new LoginResponse(response, 200, { token })
