@@ -11,15 +11,24 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_name }) {
-      const users = await User
+    async Applications(obj, { competence_ids, availability }) {
+      let users = User
         .query()
-        .whereHas('competences', builder => {
-          builder
-            .where('competences.name', competence_name)
-        })
-        .fetch()
 
+      for (let competence_id of competence_ids) {
+        users = users.whereHas('competences', builder => {
+          builder
+            .where('competences.id', competence_id)
+        })
+      }
+
+      users = users.whereHas('availabilities', builder => {
+        builder
+          .where('availabilities.from', '>', availability.from)
+          .where('availabilities.to', '<', availability.to)
+      })
+      
+      users = await users.fetch()
       return users.toJSON()
     },
 
@@ -51,6 +60,10 @@ const resolvers = {
   },
 
   User: {
+    /**
+     * @param {any} userInJson 
+     * @returns any
+     */
     async availabilities(userInJson) {
       const user = new User()
       user.newUp(userInJson)
