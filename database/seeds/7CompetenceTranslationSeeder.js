@@ -17,12 +17,12 @@ class CompetenceTranslationSeeder {
   async run () {
     const competences = Array.from({length: 100}, (x,i) => i+1)
     const langs = [1, 2, 3, 4, 5]
-    await competences.forEach(async competence_id => {
-      await langs.forEach(async language_id => {
+    for (let competence_id of competences) {
+      for (let language_id of langs) {
         const { translation } = await Factory.model('App/Models/CompetenceTranslation').make()
         await CompetenceTranslation.create({competence_id, language_id, translation})
-      })
-    })
+      }
+    }
   }
 }
 
