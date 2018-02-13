@@ -21,7 +21,7 @@ class LegacyDatabaseHandler {
    * 
    * @param {String} username 
    * @param {String} password 
-   * @returns Object
+   * @returns {Object}
    * @memberof LegacyDatabaseHandler
    */
   async getUserByLogin(username, password) {
@@ -32,7 +32,7 @@ class LegacyDatabaseHandler {
    * Retrieves a legacy user's competence profiles if they exist
    * 
    * @param {Number} person_id 
-   * @returns Array
+   * @returns {Array}
    * @memberof LegacyDatabaseHandler
    */
   async getCompetenceProfiles(person_id) {
@@ -43,7 +43,7 @@ class LegacyDatabaseHandler {
    * Retrieves a legacy user's availabilities if they exist
    * 
    * @param {Number} person_id 
-   * @returns Array
+   * @returns {Array}
    * @memberof LegacyDatabaseHandler
    */
   async getAvailabilities(person_id) {

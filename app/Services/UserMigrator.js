@@ -25,7 +25,7 @@ class UserMigrator {
    * Determines if a legacy user has a complete profile
    *
    * @param {Object} legacyData
-   * @returns boolean
+   * @returns {boolean}
    * @memberof UserMigrator
    */
   async isCompleteUser(legacyData) {
@@ -45,17 +45,14 @@ class UserMigrator {
    * Migrates a complete user, with competences
    * and availabilities to the new database
    *
-   * @param {Object} legacyData
+   * @param {Object} legacyData {name, surname, ssn, email, password, role_id, username}
    * @memberof UserMigrator
    */
   async migrate (legacyData) {
     await this.newDB.transaction(async trx => {
       const user = await this.migrateUser(trx, legacyData)
-      console.log('user migrated')
       await this.migrateCompetences(trx, user, legacyData)
-      console.log('comps migrated')
       await this.migrateAvailabilities(trx, user, legacyData)
-      console.log('avails migrated')
     })
   }
 
@@ -63,8 +60,8 @@ class UserMigrator {
    * Migrates a complete user to the new database
    *
    * @param {Transaction} trx
-   * @param {Object} legacyData
-   * @returns User
+   * @param {Object} legacyData {name, surname, ssn, email, password, role_id, username}
+   * @returns {User}
    * @memberof UserMigrator
    */
   async migrateUser (trx, legacyData) {
@@ -88,7 +85,7 @@ class UserMigrator {
    *
    * @param {Transaction} trx
    * @param {User} user
-   * @param {Object} legacyData
+   * @param {Object} legacyData { person_id }
    * @memberof UserMigrator
    */
   async migrateAvailabilities (trx, user, legacyData) {

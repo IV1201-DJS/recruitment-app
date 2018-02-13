@@ -7,7 +7,7 @@ class Competence extends Model {
   /**
    * Retrieves all translations for this competence
    * 
-   * @returns {Collection}
+   * @returns {HasMany}
    * @memberof Competence
    */
   translations () {
@@ -17,7 +17,7 @@ class Competence extends Model {
   /**
    * Retrieves all users with this competence
    * 
-   * @returns {Collection}
+   * @returns {BelongsToMany}
    * @memberof Competence
    */
   users () {

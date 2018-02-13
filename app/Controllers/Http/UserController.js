@@ -1,11 +1,12 @@
 'use strict'
 
+const http = require('http-status-codes')
 const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
 const UserMigrator = use('App/Services/UserMigrator')
 const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
-const LoginResponse = use('App/Data/REST/LoginResponse')
+const RestResponse = use('App/Data/REST/RestResponse')
 
 
 /**
@@ -25,7 +26,7 @@ class UserController {
    * @returns User
    * @memberof UserController
    */
-  async store ({ request }) {
+  async store ({ request, response }) {
     const rules = {
       username: 'required|unique:users,username',
       password: 'required',
@@ -39,13 +40,19 @@ class UserController {
     const validation = await validateAll(userData, rules)
 
     if (validation.fails()) {
-      return validation.messages()
+      return new RestResponse(
+        response, 
+        http.UNPROCESSABLE_ENTITY, 
+        { errors: validation.messages() }
+      )
     }
-    
-    // TODO: LEIFY IT UP
-    // userData.role_id = 1
 
-    return await User.create(userData)
+    const user = await User.create(userData)
+    return new RestResponse(
+      response, 
+      http.CREATED, 
+      { user }
+    )
   }
 
   /**
@@ -53,7 +60,7 @@ class UserController {
    * If not, searches legacy database for old user and attempts migration.
    * 
    * @param {Object} { request, response, auth } 
-   * @returns LoginResponse
+   * @returns RestResponse
    * @memberof UserController
    */
   async login ({ request, response, auth }) {
@@ -61,31 +68,45 @@ class UserController {
     const { username, password } = request.all()
 
     const rules = {
-      username: 'required|exists:users,username',
+      username: 'required',
       password: 'required'
     }
     const validation = await validateAll({ username, password }, rules)
 
     if (validation.fails()) {
-      return validation.messages()
+      return new RestResponse(
+        response, 
+        http.UNPROCESSABLE_ENTITY, 
+        { errors: validation.messages() }
+      )
     }
     
     try {
       const { token } = await auth.attempt(username, password)
-      return new LoginResponse(response, 200, { token })
+      return new RestResponse(response, http.OK, { token })
     } catch (noUser) {
       const legacyUserData = await this.legacyDB.getUserByLogin(username, password)
       if (!legacyUserData) {
-        return new LoginResponse(response, 401, { 
-          message: 'The username or password was incorrect' 
-        })
+        return new RestResponse(
+          response, 
+          http.UNAUTHORIZED, 
+          { message: 'The username or password was incorrect' }
+        )
       }
       try {
-        await this.handleUserMigration(legacyUserData)
+        await this._handleUserMigration(legacyUserData)
         const { token } = await auth.attempt(username, password)
-        return new LoginResponse(response, 200, { token })
+        return new RestResponse(
+          response, 
+          http.OK, 
+          { token }
+        )
       } catch (legacyUser) { // TODO: re-think this because its not very safe
-        return new LoginResponse(response, 409, { legacyUser })
+        return new RestResponse(
+          response, 
+          http.CONFLICT, 
+          { legacyUser }
+        )
       }
     }
   }
@@ -95,10 +116,11 @@ class UserController {
    * 
    * @param {Object} legacyUserData 
    * @memberof UserController
+   * @private
    */
-  async handleUserMigration (legacyUserData) {
+  async _handleUserMigration (legacyUserData) {
     const migrator = new UserMigrator()
-    const isComplete = await this.migrator.isCompleteUser(legacyUserData)
+    const isComplete = await migrator.isCompleteUser(legacyUserData)
     if (!isComplete) {
       const legacyUser = new LegacyUser()
       legacyUser.newUp(legacyUserData)

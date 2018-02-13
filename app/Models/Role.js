@@ -6,7 +6,7 @@ class Role extends Model {
   /**
    * Retrieves all users with this role
    * 
-   * @returns 
+   * @returns {HasMany}
    * @memberof Role
    */
   users () {
@@ -16,7 +16,7 @@ class Role extends Model {
   /**
    * Retrieves all translations for the role
    * 
-   * @returns 
+   * @returns {HasMany}
    * @memberof Role
    */
   translations () {
@@ -27,7 +27,7 @@ class Role extends Model {
    * Translates the role's name into another language
    * 
    * @param {Language} language 
-   * @returns String
+   * @returns {String}
    * @memberof Role
    */
   async translatedTo (language) {
