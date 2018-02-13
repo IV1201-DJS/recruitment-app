@@ -1,6 +1,6 @@
 'use strict'
 
-const { validate } = use('Validator')
+const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
 const UserMigrator = use('App/Services/UserMigrator')
@@ -36,7 +36,7 @@ class UserController {
     }
 
     const userData = request.only(Object.keys(rules))
-    const validation = await validate(userData, rules)
+    const validation = await validateAll(userData, rules)
 
     if (validation.fails()) {
       return validation.messages()
