@@ -64,9 +64,9 @@ type Query {
   Applications(competence_ids: [ID]!, availability: AvailabilityInput!): [User]
   Competences(name: String!): [Competence]
   CurrentUser: User
-
 }
 
 type Mutation {
-  addCompetences(competenceID: ID!, experience_years: Float!): User
+  addCompetence(competence_id: ID!, experience_years: Float!): User
+  addAvailability(availability: AvailabilityInput!): User
 }
