@@ -8,7 +8,7 @@ const Hash = use('Hash')
 
 /**
  * Service for migrating old users to the new database
- * 
+ *
  * @class UserMigrator
  */
 class UserMigrator {
@@ -23,8 +23,8 @@ class UserMigrator {
 
   /**
    * Determines if a legacy user has a complete profile
-   * 
-   * @param {Object} legacyData 
+   *
+   * @param {Object} legacyData
    * @returns boolean
    * @memberof UserMigrator
    */
@@ -37,14 +37,15 @@ class UserMigrator {
       role_id: 'required',
       username: 'required'
     })
+
     return !validation.fails()
   }
 
   /**
    * Migrates a complete user, with competences
    * and availabilities to the new database
-   * 
-   * @param {Object} legacyData 
+   *
+   * @param {Object} legacyData
    * @memberof UserMigrator
    */
   async migrate (legacyData) {
@@ -60,9 +61,9 @@ class UserMigrator {
 
   /**
    * Migrates a complete user to the new database
-   * 
-   * @param {Transaction} trx 
-   * @param {Object} legacyData 
+   *
+   * @param {Transaction} trx
+   * @param {Object} legacyData
    * @returns User
    * @memberof UserMigrator
    */
@@ -84,10 +85,10 @@ class UserMigrator {
 
   /**
    * Migrates the availabilites of a legacy user to the new database
-   * 
-   * @param {Transaction} trx 
-   * @param {User} user 
-   * @param {Object} legacyData 
+   *
+   * @param {Transaction} trx
+   * @param {User} user
+   * @param {Object} legacyData
    * @memberof UserMigrator
    */
   async migrateAvailabilities (trx, user, legacyData) {
@@ -101,13 +102,13 @@ class UserMigrator {
       await trx.insert(availabilityMapping).into('availabilities')
     }
   }
-  
+
   /**
    * Migrates the competences of a legacy user to the new database
-   * 
-   * @param {Transaction} trx 
-   * @param {User} user 
-   * @param {Object} legacyData 
+   *
+   * @param {Transaction} trx
+   * @param {User} user
+   * @param {Object} legacyData
    * @memberof UserMigrator
    */
   async migrateCompetences (trx, user, legacyData) {
