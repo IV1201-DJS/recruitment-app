@@ -49,12 +49,24 @@ const resolvers = {
   },
 
   Mutation: {
-    async addCompetences(objc, { competenceID, experience_years }, { auth }) {
+    async addCompetence(obj, { competence_id, experience_years }, { auth }) {
       const user = await auth.getUser()
-      const res = await user.competences().attach(competenceID, row => {
+      await user.competences().attach(competence_id, row => {
         row.experience_years = experience_years
       })
+      return user
+    },
+
+    async addAvailability(obj, { availability }, { auth }) {
+      const user = await auth.getUser()
+      const { from, to } = availability
       
+      const instance = new Availability()
+      instance.user_id = user.id
+      instance.from = from
+      instance.to = to
+
+      await user.availabilities().save(instance)
       return user
     }
   },

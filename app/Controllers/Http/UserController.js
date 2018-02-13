@@ -57,6 +57,7 @@ class UserController {
    * @memberof UserController
    */
   async login ({ request, response, auth }) {
+    
     const { username, password } = request.all()
 
     const rules = {

@@ -47,8 +47,8 @@ Route.post('/api/register', 'UserController.store')
  * @returns Requested JSON-data
  */
 Route.route('/graphql', async ({ request, auth, response }) => {
-  const locale = request.header('locale')
-  const language = await new Language().setOrDefault(locale)
+  const headerLanguage = request.header('language') || 'en'
+  const language = await new Language().setOrDefault(headerLanguage)
   return GraphqlAdonis.graphql({
     schema,
     context: { 
@@ -57,7 +57,7 @@ Route.route('/graphql', async ({ request, auth, response }) => {
     }
   }, request, response)
 }, ['GET', 'POST'])
-  .middleware(['auth-jwt'])
+.middleware(['auth-jwt'])
 
 
   /**
