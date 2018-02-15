@@ -11,7 +11,7 @@ const Language = use('App/Models/Language')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_ids, availability }) {
+    async Applications(obj, { competence_ids, searchedAvailability }) {
       let users = User
         .query()
 
@@ -24,11 +24,15 @@ const resolvers = {
 
       users = users.whereHas('availabilities', builder => {
         builder
-          .where('availabilities.from', '>', availability.from)
-          .where('availabilities.to', '<', availability.to)
+          .where('availabilities.from', '<=', searchedAvailability.from)
+          .where('availabilities.to', '>=', searchedAvailability.to)
       })
       
-      users = await users.fetch()
+      try {
+        users = await users.fetch()
+      } catch (queryError) {
+        throw 'There was an error when retrieving the applications'
+      }
       return users.toJSON()
     },
 

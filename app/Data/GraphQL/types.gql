@@ -61,7 +61,7 @@ input AvailabilityInput {
 
 type Query {
   User(id: ID!): User
-  Applications(competence_ids: [ID]!, availability: AvailabilityInput!): [User]
+  Applications(competence_ids: [ID]!, searchedAvailability: AvailabilityInput!): [User]
   Competences(name: String!): [Competence]
   CurrentUser: User
 }
