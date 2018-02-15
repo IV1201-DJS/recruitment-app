@@ -16,9 +16,9 @@ class UserMigrator {
    * Creates an instance of UserMigrator.
    * @memberof UserMigrator
    */
-  constructor () {
-    this.legacyDB = new LegacyDatabaseHandler()
-    this.newDB = use('Database')
+  constructor (legacyDB = new LegacyDatabaseHandler(), newDB = use('Database')) {
+    this.legacyDB = legacyDB
+    this.newDB = newDB
   }
 
   /**
