@@ -25,6 +25,7 @@
     "@adonisjs/ignitor": "^2.0.5",
     "@adonisjs/lucid": "^5.0.2",
     "@adonisjs/validator": "^5.0.3",
+    "@adonisjs/vow": "^1.0.15",
     "adonis-apollo-server": "^1.0.2",
     "graphql": "^0.13.0",
     "graphql-tools": "^2.21.0",
@@ -36,7 +37,8 @@
   },
   "devDependencies": {
     "jest": "^22.3.0",
-    "nodemon": "^1.14.12"
+    "nodemon": "^1.14.12",
+    "sinon": "^4.3.0"
   },
   "autoload": {
     "App": "./app"
