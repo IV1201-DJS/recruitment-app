@@ -90,7 +90,7 @@ class UserController {
         return new RestResponse(
           response, 
           http.UNAUTHORIZED, 
-          { message: 'The username or password was incorrect' }
+          'The username or password was incorrect'
         )
       }
       try {
