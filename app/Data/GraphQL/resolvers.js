@@ -47,11 +47,9 @@ const resolvers = {
         return competences.toJSON()
     
     },
-
     async AllCompetences(obj) {
       const competences = await Competence.query().fetch()
-      console.log(competences)
-        return competences.toJSON()
+      return competences.toJSON()
     },
 
     async CurrentUser(obj, args, { auth }) {
