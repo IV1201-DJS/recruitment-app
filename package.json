@@ -36,6 +36,7 @@
     "url-parse": "^1.2.0"
   },
   "devDependencies": {
+    "bcrypt": "^1.0.3",
     "jest": "^22.3.0",
     "nodemon": "^1.14.12",
     "sinon": "^4.3.0"
