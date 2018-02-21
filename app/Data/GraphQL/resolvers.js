@@ -42,9 +42,16 @@ const resolvers = {
       return user.toJSON()
     },
 
-    async Competences(obj, { name }) {
-      const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
-      return competences.toJSON()
+    async FindCompetences(obj, { name }) {
+        const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
+        return competences.toJSON()
+    
+    },
+
+    async AllCompetences(obj) {
+      const competences = await Competence.query().fetch()
+      console.log(competences)
+        return competences.toJSON()
     },
 
     async CurrentUser(obj, args, { auth }) {
