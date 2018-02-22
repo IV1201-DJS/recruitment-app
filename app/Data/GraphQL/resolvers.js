@@ -8,32 +8,54 @@ const Competence = use('App/Models/Competence')
 const RoleTranslation = use('App/Models/RoleTranslation')
 const CompetenceTranslation = use('App/Models/CompetenceTranslation')
 const Language = use('App/Models/Language')
+const Application = use('App/Models/Application')
+const ApplicationStatus = use('App/Models/ApplicationStatus')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_ids, searchedAvailability }) {
-      let users = User
+    async Applications(obj, { competence_ids, searched_availability, full_name, date_of_registration}) {
+      let applications = Application
         .query()
 
-      for (let competence_id of competence_ids) {
-        users = users.whereHas('competences', builder => {
-          builder
-            .where('competences.id', competence_id)
+      if (competence_ids) {
+        for (let competence_id of competence_ids) {
+          applications = applications.whereHas('user', builder => {
+            builder.whereHas('competences', innerBuilder => {
+              innerBuilder.where('competences.id', competence_id)
+            })
+          })
+        }
+      }
+      
+      if (searched_availability) {
+        applications = applications.whereHas('user', builder => {
+          builder.whereHas('availabilities', innerBuilder => {
+            innerBuilder
+              .where('availabilities.from', '<=', searched_availability.from)
+              .where('availabilities.to', '>=', searched_availability.to)
+          })
         })
       }
 
-      users = users.whereHas('availabilities', builder => {
-        builder
-          .where('availabilities.from', '<=', searchedAvailability.from)
-          .where('availabilities.to', '>=', searchedAvailability.to)
-      })
+      if (full_name) {
+        applications = applications.whereHas('user', builder => {
+          builder.where('firstname', full_name.firstname).where('lastname', full_name.lastname)
+        })
+      }
+      
+      if (date_of_registration) {
+        console.log(date_of_registration)
+        applications = applications
+          .where('created_at', '>=', date_of_registration + ' 00:00:00')
+          .where('created_at', '<=', date_of_registration + ' 23:59:59')
+      }
       
       try {
-        users = await users.fetch()
+        applications = await applications.fetch()
       } catch (queryError) {
         throw 'There was an error when retrieving the applications'
       }
-      return users.toJSON()
+      return applications.toJSON()
     },
 
     async User(obj, { id }) {
@@ -58,12 +80,34 @@ const resolvers = {
   },
 
   Mutation: {
+    async addApplication(obc, { competences, availabilities, user_id}) {
+      const user = await User.find(user_id)
+      
+      if (await user.hasPendingApplication()) {
+        throw 'User has a pending application already'
+      }
+      for (let competence of competences) {
+        user.competences().attach(competence.id, row => {
+          row.experience_years = competence.experience_years
+        })
+      }
+      for (let availability of availabilities) {
+        user.availabilities().save(availability)
+      }
+      const application = new Application()
+      application.user_id = user_id
+      const status = await ApplicationStatus.query().where('name', 'PENDING').first()
+      application.application_status_id = status.id
+      await application.save()
+      return application.toJSON()
+    },
+
     async addCompetence(obj, { competence_id, experience_years }, { auth }) {
       const user = await auth.getUser()
       await user.competences().attach(competence_id, row => {
         row.experience_years = experience_years
       })
-      return user
+      return user.toJSON()
     },
 
     async addAvailability(obj, { availability }, { auth }) {
@@ -76,10 +120,29 @@ const resolvers = {
       instance.to = to
 
       await user.availabilities().save(instance)
-      return user
+      return user.toJSON()
     }
   },
 
+  Application: {
+    async user(applicationInJson) {
+  
+      const application = new Application()
+      application.newUp(applicationInJson)
+      const user = await application.user().fetch()
+      return user.toJSON()
+    },
+
+    async status(applicationInJson) {
+
+      const application = new Application()
+      application.newUp(applicationInJson)
+      const status = await application.status().fetch()
+      console.log(status)
+      console.log(application)
+      return status.toJSON()
+    }
+  },
   User: {
     /**
      * @param {any} userInJson 

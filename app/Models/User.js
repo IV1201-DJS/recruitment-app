@@ -25,6 +25,10 @@ class User extends Model {
       .withPivot(['experience_years'])
   }
 
+  applications() {
+    return this.hasMany('App/Models/Application')
+  }
+
   /**
    * Retrieves the user's role
    * 
@@ -46,6 +50,14 @@ class User extends Model {
    */
   tokens () {
     return this.hasMany('App/Models/Token')
+  }
+
+  async hasPendingApplication() {
+    const pending = await this.applications().whereHas('status', builder => {
+      builder
+        .where('name', 'PENDING')
+    }).count()
+    return pending[0].count != 0
   }
 
   static get hidden () {

@@ -21,6 +21,15 @@ type Availability {
   to: String
 }
 
+type Application {
+  user: User
+  status: ApplicationStatus
+}
+
+type ApplicationStatus {
+  name: String
+}
+
 type UserCompetence {
   id: ID
   name: String
@@ -59,15 +68,27 @@ input AvailabilityInput {
   to: String!
 }
 
+input FullNameInput {
+  firstname: String!
+  lastname: String!
+}
+
+input CompetenceInput {
+  id: ID!
+  experience_years: Float!
+}
+
+
 type Query {
   User(id: ID!): User
-  Applications(competence_ids: [ID]!, searchedAvailability: AvailabilityInput!): [User]
+  Applications(competence_ids: [ID], searched_availability: AvailabilityInput, full_name: FullNameInput, date_of_registration: String): [Application]
   FindCompetences(name: String): [Competence]
   AllCompetences: [Competence]
   CurrentUser: User
 }
 
 type Mutation {
+  addApplication(competences: [CompetenceInput], availabilities: [AvailabilityInput], user_id: Int): Application
   addCompetence(competence_id: ID!, experience_years: Float!): User
   addAvailability(availability: AvailabilityInput!): User
 }
