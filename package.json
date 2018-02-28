@@ -1,7 +1,7 @@
 {
   "name": "adonis-api-app",
   "version": "4.0.0",
-  "description": "Adonisjs boilerplate for API server with pre-configured JWT",
+  "description": "Backend for the recruitment application",
   "main": "index.js",
   "scripts": {
     "production": "node server.js",
