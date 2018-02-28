@@ -35,10 +35,10 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # Migrate database
-      - run: yarn migrate
+      # - run: yarn migrate
 
       # Seed database
-      - run: yarn seed
+      # - run: yarn seed
 
       # run tests!
       - run: yarn testci
