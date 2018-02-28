@@ -6,6 +6,7 @@
   "scripts": {
     "production": "node server.js",
     "dev": "nodemon -e js,gql --exec 'node server.js'",
+    "testci": "NODE_ENV=testing node ace test",
     "test": "node ace test",
     "migrate": "adonis migration:refresh",
     "seed": "adonis seed"

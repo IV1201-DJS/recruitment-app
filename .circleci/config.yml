@@ -15,27 +15,6 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
-    
-    environment:
-      HOST: 0.0.0.0
-      PORT: 3333
-      APP_URL: http://${HOST}:${PORT}
-      NODE_ENV: development
-      CACHE_VIEWS: false
-      APP_KEY: qMxw3wZUeSTlgy6stqyb9JIQIdmeR5iv
-      DB_CONNECTION: pg
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD:
-      DB_DATABASE: adonis
-      LEGACY_DB_CLIENT: mysql
-      LEGACY_DB_HOST: 127.0.0.1
-      LEGACY_DB_PORT: 3306
-      LEGACY_DB_USER: root
-      LEGACY_DB_PASSWORD:
-      LEGACY_DB_DATABASE: iv120
-
     working_directory: ~/repo
 
     steps:
@@ -62,4 +41,4 @@ jobs:
       - run: yarn seed
 
       # run tests!
-      - run: yarn test
+      - run: yarn testci
