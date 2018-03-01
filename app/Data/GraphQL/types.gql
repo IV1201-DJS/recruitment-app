@@ -66,10 +66,10 @@ type Period {
 }
 
 type PaginatedApplications {
-  total: String
-  perPage: String
-  lastPage: String
-  page: String
+  total: Int
+  perPage: Int
+  lastPage: Int
+  page: Int
   data: [Application]
 }
 

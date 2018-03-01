@@ -36,18 +36,16 @@ const resolvers = {
         })
       }
 
-
       if (name) {
         applications = applications.whereHas('user', builder => {
           const splitName = name.split(" ")
           if (splitName.length == 1) {
             builder
-              .where('firstname', 'ilike', `${splitName[0]}%`)
-              .orWhere('lastname', 'ilike', `${splitName[0]}%`)
+              .where('firstname', 'ILIKE', `${splitName[0]}%`)
           } else {
             builder
-              .where('firstname', 'ilike', `${splitName[0]}%`)
-              .where('lastname', 'ilike', `${splitName[1]}%`)
+              .where('firstname', 'ILIKE', `${splitName[0]}%`)
+              .where('lastname', 'ILIKE', `${splitName[1]}%`)
           }
         })
       }
@@ -62,6 +60,7 @@ const resolvers = {
         const paginated_applications = await applications.paginate(page, page_size)
         return paginated_applications.toJSON()
       } catch (queryError) {
+        console.error(queryError)
         throw 'There was an error when retrieving the applications'
       }
     },
