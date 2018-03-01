@@ -14,7 +14,10 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 const resolvers = {
   Query: {
     async Applications(obj, { competence_ids, searched_availability, name, date_of_registration, page, page_size }) {
-      let applications = Application.query().where('status', 'PENDING')
+      let applications = Application.query().whereHas('status', builder => {
+        builder
+          .where('name', 'PENDING')
+      })
 
       if (competence_ids) {
         for (let competence_id of competence_ids) {
@@ -151,7 +154,7 @@ const resolvers = {
       const status = await ApplicationStatus.query().where('name', new_status).first()
       const application = await Application.query().where('id', application_id).update('status', status.id)
       
-      return application.toJSON()
+      return application.toJSON
     }
   },
 
