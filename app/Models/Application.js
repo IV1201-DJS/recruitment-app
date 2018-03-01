@@ -4,11 +4,11 @@ const Model = use('Model')
 
 class Application extends Model {
 
-  user() {
+  user () {
     return this.belongsTo('App/Models/User')
   }
 
-  status() {
+  status () {
     return this.belongsTo('App/Models/ApplicationStatus')
   }
 

@@ -3,8 +3,8 @@
 const Model = use('Model')
 
 class ApplicationStatus extends Model {
-  
-  application() {
+
+  application () {
     return this.hasMany('App/Models/Application')
   }
 }

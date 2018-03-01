@@ -16,7 +16,7 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 
 class ApplicationSeeder {
   async run () {
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 100; i++) {
       const application = new Application()
       application.user_id = i
       const status = await ApplicationStatus.query().where('name', 'PENDING').first()
