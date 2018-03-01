@@ -166,7 +166,11 @@ const resolvers = {
       const status = await application.status().fetch()
 
       return status.toJSON()
-    }
+    },
+
+    async date_of_registration(applicationInJson) {
+      return applicationInJson.created_at
+    },
   },
   User: {
     /**

@@ -22,6 +22,7 @@ type Availability {
 }
 
 type Application {
+  id: ID
   user: User
   status: ApplicationStatus
   date_of_registration: String
