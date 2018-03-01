@@ -14,7 +14,7 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 const resolvers = {
   Query: {
     async Applications(obj, { competence_ids, searched_availability, name, date_of_registration, page, page_size }) {
-      let applications = Application.query()
+      let applications = Application.query().where('status', 'PENDING')
 
       if (competence_ids) {
         for (let competence_id of competence_ids) {

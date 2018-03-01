@@ -103,8 +103,8 @@ type Query {
 }
 
 type Mutation {
-  addApplication(competences: [CompetenceInput],
-                 availabilities: [AvailabilityInput]): Application
+  addApplication(competences: [CompetenceInput]!,
+                 availabilities: [AvailabilityInput]!): Application
 
   addCompetence(competence_id: ID!, experience_years: Float!): User
 
