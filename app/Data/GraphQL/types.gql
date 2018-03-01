@@ -65,6 +65,14 @@ type Period {
   to: String
 }
 
+type PaginatedApplications {
+  total: String
+  perPage: String
+  lastPage: String
+  page: String
+  data: [Application]
+}
+
 input AvailabilityInput {
   from: String!
   to: String!
@@ -81,7 +89,9 @@ type Query {
   Applications(competence_ids: [ID],
                searched_availability: AvailabilityInput,
                name: String,
-               date_of_registration: String): [Application]
+               date_of_registration: String,
+               page: Int!,
+               page_size: Int!): PaginatedApplications
 
   Application(id: ID!): Application
 

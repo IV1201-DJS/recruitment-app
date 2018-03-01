@@ -13,7 +13,7 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_ids, searched_availability, name, date_of_registration }) {
+    async Applications(obj, { competence_ids, searched_availability, name, date_of_registration, page, page_size }) {
       let applications = Application.query()
 
       if (competence_ids) {
@@ -35,6 +35,7 @@ const resolvers = {
           })
         })
       }
+
 
       if (name) {
         applications = applications.whereHas('user', builder => {
@@ -58,12 +59,11 @@ const resolvers = {
       }
 
       try {
-        applications = await applications.fetch()
+        const paginated_applications = await applications.paginate(page, page_size)
+        return paginated_applications.toJSON()
       } catch (queryError) {
         throw 'There was an error when retrieving the applications'
       }
-
-      return applications.toJSON()
     },
 
     async Application (obj, { id }) {
