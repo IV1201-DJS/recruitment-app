@@ -108,5 +108,8 @@ type Mutation {
 
   addCompetence(competence_id: ID!, experience_years: Float!): User
 
-  addAvailability(availability: AvailabilityInput!): User
+  addAvailability(availability: AvailabilityInput!): Availability
+
+  updateApplicationStatus(application_id: ID!, new_status: String!)
+
 }
