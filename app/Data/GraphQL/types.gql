@@ -110,6 +110,5 @@ type Mutation {
 
   addAvailability(availability: AvailabilityInput!): Availability
 
-  updateApplicationStatus(application_id: ID!, new_status: String!)
-
+  updateApplicationStatus(application_id: ID!, new_status: String!): Application
 }
