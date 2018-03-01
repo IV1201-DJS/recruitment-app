@@ -154,7 +154,7 @@ const resolvers = {
       const status = await ApplicationStatus.query().where('name', new_status).first()
       const application = await Application.query().where('id', application_id).update('status', status.id)
       
-      return application.toJSON
+      return application.toJSON()
     }
   },
 
