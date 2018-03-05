@@ -10,11 +10,13 @@
 |
 */
 
-const Factory = use('Factory')
+const Role = use('App/Models/Role')
 
 class RoleSeeder {
   async run () {
-    await Factory.model('App/Models/Role').createMany(10)
+    const roles = ['USER', 'RECRUITER', 'ADMIN']
+    const queries = roles.map(name => Role.create({ name }))
+    await Promise.all(queries)
   }
 }
 

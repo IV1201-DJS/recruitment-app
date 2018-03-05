@@ -28,12 +28,12 @@ Factory.blueprint('App/Models/Competence', (faker) => {
   }
 })
 
-Factory.blueprint('App/Models/User', (faker) => {
-  const role_id = faker.integer({min: 1, max: 10})
+Factory.blueprint('App/Models/User', (faker, i, data) => {
+  const role_id = data.role_id || faker.integer({min: 1, max: 3})
   const randInt = faker.integer({min: 1, max: 1000000000})
 
   return {
-    username: faker.username() + randInt,
+    username: data.username || faker.username() + randInt,
     email: randInt + faker.email(),
     password: 'hej123',
     firstname: faker.first(),

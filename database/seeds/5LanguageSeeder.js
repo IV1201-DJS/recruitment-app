@@ -11,10 +11,13 @@
 */
 
 const Factory = use('Factory')
+const Language = use('App/Models/Language')
 
 class LanguageSeeder {
   async run () {
-    await Factory.model('App/Models/Language').createMany(5)
+    const langs = ['sv', 'en']
+    const queries = langs.map(name => Language.create({ name }))
+    await Promise.all(queries)
   }
 }
 

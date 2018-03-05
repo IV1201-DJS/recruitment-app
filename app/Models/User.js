@@ -52,12 +52,16 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  async hasPendingApplication () {
-    const pending = await this.applications().whereHas('status', builder => {
-      builder.where('name', 'PENDING')
-    }).count()
+  async hasPendingApplication (trx) {
+    const pending = await this.applications()
+    .transacting(trx)
+    .forShare()
+    .doesntHave('status')
+    .fetch()
 
-    return pending[0].count != 0
+    console.log(pending.toJSON())
+
+    return pending.toJSON().length != 0
   }
 
   static get hidden () {
@@ -67,7 +71,6 @@ class User extends Model {
   static boot () {
     super.boot()
     this.addHook('beforeCreate', 'User.hashPassword')
-    this.addHook('beforeCreate', (user) => user.role_id = 1 )
   }
 }
 

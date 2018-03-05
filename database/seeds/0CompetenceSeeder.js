@@ -14,7 +14,7 @@ const Factory = use('Factory')
 
 class CompetenceSeeder {
   async run () {
-    await Factory.model('App/Models/Competence').createMany(100)
+    await Factory.model('App/Models/Competence').createMany(50)
   }
 }
 

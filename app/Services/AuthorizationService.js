@@ -15,7 +15,7 @@ class AuthorizationService {
     } catch (authError) {
       throw new Error('Could not authenticate user')
     }
-    const authorized = role_names.includes(role.name)
+    const authorized = role.name === 'ADMIN' || role_names.includes(role.name)
     if (!authorized) {
       throw new Error('User not authorized') //TODO: Implement exceptions
     }

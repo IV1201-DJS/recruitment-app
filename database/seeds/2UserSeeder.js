@@ -14,7 +14,10 @@ const Factory = use('Factory')
 
 class UserSeeder {
   async run () {
-    await Factory.model('App/Models/User').createMany(1000)
+    const usernames = ['user', 'recruiter', 'admin']
+    const queries = usernames.map((name, index) => Factory.model('App/Models/User').create({ role_id: (index+1), username: name }))
+    await Promise.all(queries)
+    const queries2 = await Factory.model('App/Models/User').createMany(97)
   }
 }
 
