@@ -87,7 +87,8 @@ input CompetenceInput {
 type Query {
   User(id: ID!): User
 
-  Applications(competence_ids: [ID],
+  Applications(status_id: ID,
+               competence_ids: [ID],
                searched_availability: AvailabilityInput,
                name: String,
                date_of_registration: String,

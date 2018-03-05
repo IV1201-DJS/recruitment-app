@@ -10,61 +10,19 @@ const CompetenceTranslation = use('App/Models/CompetenceTranslation')
 const Language = use('App/Models/Language')
 const Application = use('App/Models/Application')
 const ApplicationStatus = use('App/Models/ApplicationStatus')
+const ApplicationService = use('App/Services/ApplicationService')
+const applicationService = new ApplicationService()
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_ids, searched_availability, name, date_of_registration, page, page_size }) {
-      let applications = Application.query().whereHas('status', builder => {
-        builder
-          .where('name', 'PENDING')
-      })
-
-      if (competence_ids) {
-        for (let competence_id of competence_ids) {
-          applications = applications.whereHas('user', builder => {
-            builder.whereHas('competences', innerBuilder => {
-              innerBuilder.where('competences.id', competence_id)
-            })
-          })
-        }
-      }
-
-      if (searched_availability) {
-        applications = applications.whereHas('user', builder => {
-          builder.whereHas('availabilities', innerBuilder => {
-            innerBuilder
-              .where('availabilities.from', '<=', searched_availability.from)
-              .where('availabilities.to', '>=', searched_availability.to)
-          })
-        })
-      }
-
-      if (name) {
-        applications = applications.whereHas('user', builder => {
-          const splitName = name.split(" ")
-          if (splitName.length == 1) {
-            builder
-              .where('firstname', 'ILIKE', `${splitName[0]}%`)
-          } else {
-            builder
-              .where('firstname', 'ILIKE', `${splitName[0]}%`)
-              .where('lastname', 'ILIKE', `${splitName[1]}%`)
-          }
-        })
-      }
-
-      if (date_of_registration) {
-        applications = applications
-          .where('created_at', '>=', date_of_registration + ' 00:00:00')
-          .where('created_at', '<=', date_of_registration + ' 23:59:59')
-      }
-
+    async Applications(obj, conditions) {
       try {
-        const paginated_applications = await applications.paginate(page, page_size)
-        return paginated_applications.toJSON()
-      } catch (queryError) {
-        console.error(queryError)
-        throw 'There was an error when retrieving the applications'
+        const applications = await applicationService
+          .fetchApplicationsByConditions(conditions)
+        return applications.toJSON()
+      } catch (fetchError) {
+        Logger.debug(fetchError)
+        return null //TODO: Implement exceptions
       }
     },
 
