@@ -78,7 +78,6 @@ const resolvers = {
 
   Application: {
     async user(applicationInJson) {
-
       const application = new Application()
       application.newUp(applicationInJson)
       const user = await application.user().fetch()
@@ -87,11 +86,10 @@ const resolvers = {
     },
 
     async status(applicationInJson) {
-
       const application = new Application()
       application.newUp(applicationInJson)
       const status = await application.status().fetch()
-      return status.toJSON()
+      return status ? status.toJSON() : null
     },
 
     async date_of_registration(applicationInJson) {
