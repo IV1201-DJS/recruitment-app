@@ -1,4 +1,3 @@
-// @ts-check
 'use strict'
 
 const Logger = use('Logger')
@@ -98,6 +97,11 @@ const resolvers = {
 
     async CurrentUser(obj, args, { auth }) {
       return await auth.getUser()
+    },
+
+    async AllApplicationStatuses(obj) {
+      const statuses = await ApplicationStatus.query().fetch()
+      return statuses.toJSON()
     }
   },
 
@@ -152,9 +156,9 @@ const resolvers = {
     },
 
     async updateApplicationStatus(obj, { application_id, new_status }) {
-      const status = await ApplicationStatus.query().where('name', new_status).first()
-      const application = await Application.query().where('id', application_id).update('status', status.id)
-
+      const application = await Application.query().where('id', application_id).first()
+      application.application_status_id = new_status
+      await application.save()
       return application.toJSON()
     }
   },
@@ -174,7 +178,6 @@ const resolvers = {
       const application = new Application()
       application.newUp(applicationInJson)
       const status = await application.status().fetch()
-
       return status.toJSON()
     },
 

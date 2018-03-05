@@ -29,6 +29,7 @@ type Application {
 }
 
 type ApplicationStatus {
+  id: ID
   name: String
 }
 
@@ -100,6 +101,8 @@ type Query {
   AllCompetences: [Competence]
 
   CurrentUser: User
+
+  AllApplicationStatuses: [ApplicationStatus]
 }
 
 type Mutation {
@@ -110,5 +113,5 @@ type Mutation {
 
   addAvailability(availability: AvailabilityInput!): Availability
 
-  updateApplicationStatus(application_id: ID!, new_status: String!): Application
+  updateApplicationStatus(application_id: ID!, new_status: ID!): Application
 }
