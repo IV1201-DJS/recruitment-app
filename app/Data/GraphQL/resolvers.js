@@ -1,54 +1,51 @@
 'use strict'
 
 const Logger = use('Logger')
+const Application = use('App/Models/Application')
+const Competence = use('App/Models/Competence')
 const User = use('App/Models/User')
 const Role = use('App/Models/Role')
-const Availability = use('App/Models/Availability')
-const Competence = use('App/Models/Competence')
-const RoleTranslation = use('App/Models/RoleTranslation')
-const CompetenceTranslation = use('App/Models/CompetenceTranslation')
-const Language = use('App/Models/Language')
-const Application = use('App/Models/Application')
-const ApplicationStatus = use('App/Models/ApplicationStatus')
-const ApplicationService = use('App/Services/ApplicationService')
-const applicationService = new ApplicationService()
+const ApplicationStatusService = use('App/Data/Services/ApplicationStatusService')
+const ApplicationService = use('App/Data/Services/ApplicationService')
+const CompetenceService = use('App/Data/Services/CompetenceService')
+const UserService = use('App/Data/Services/UserService')
 
 const resolvers = {
   Query: {
-    async Applications(obj, conditions) {
+    async Applications(obj, conditions, { auth }) {
       try {
-        const applications = await applicationService
-          .fetchApplicationsByConditions(conditions)
+        const applicationService = await ApplicationService.newInstance(auth)
+        const applications = await applicationService.fetchApplicationsByConditions(conditions)
         return applications.toJSON()
-      } catch (fetchError) {
-        Logger.debug(fetchError)
-        return null //TODO: Implement exceptions
+      } catch (error) {
+        throw new Error(error)
       }
     },
 
-    async Application (obj, { id }) {
-      const application = await Application.findOrFail(id)
+    async Application (obj, { id }, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth)
+      const application = await applicationService.fetchById(id)
 
       return application.toJSON()
     },
 
-    async User(obj, { id }) {
-      const user = await User.findOrFail(id)
+    async User(obj, { id }, { auth }) {
+      const userService = await UserService.newInstance(auth)
+      const user = await userService.fetchById(id)
 
       return user.toJSON()
     },
 
-    async FindCompetences(obj, { name }) {
-      const competences = await Competence
-        .query()
-        .where('name', 'ilike', `%${name}%`)
-        .fetch()
+    async FindCompetences(obj, { name }, { auth }) {
+      const competenceService = await CompetenceService.newInstance(auth)
+      const competences = await competenceService.fetchWithSimilarName(name)
 
       return competences.toJSON()
     },
 
-    async AllCompetences(obj) {
-      const competences = await Competence.query().fetch()
+    async AllCompetences(obj, args, { auth }) {
+      const competenceService = await CompetenceService.newInstance(auth)
+      const competences = await competenceService.fetchAll()
 
       return competences.toJSON()
     },
@@ -57,66 +54,24 @@ const resolvers = {
       return await auth.getUser()
     },
 
-    async AllApplicationStatuses(obj) {
-      const statuses = await ApplicationStatus.query().fetch()
+    async AllApplicationStatuses(obj, args, { auth }) {
+      const applicationStatusService = await ApplicationStatusService.newInstance(auth)
+      const statuses = await applicationStatusService.fetchAll()
+
       return statuses.toJSON()
     }
   },
 
   Mutation: {
-    async addApplication(obc, { competences, availabilities }, { auth }) {
-      const user = await auth.getUser()
-
-      if (await user.hasPendingApplication()) {
-        throw 'User has a pending application already'
-      }
-
-      for (let competence of competences) {
-        user.competences().attach(competence.id, row => {
-          row.experience_years = competence.experience_years
-        })
-      }
-
-      for (let availability of availabilities) {
-        user.availabilities().save(availability)
-      }
-
-      const application = new Application()
-      application.user_id = user.id
-      const status = await ApplicationStatus.query().where('name', 'PENDING').first()
-      application.application_status_id = status.id
-      await application.save()
-
+    async addApplication(obc, information, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth, ['APPLICANT'])
+      const application = await applicationService.createApplication(information)
       return application.toJSON()
     },
 
-    async addCompetence(obj, { competence_id, experience_years }, { auth }) {
-      const user = await auth.getUser()
-      await user.competences().attach(competence_id, row => {
-        row.experience_years = experience_years
-      })
-
-      return user.toJSON()
-    },
-
-    async addAvailability(obj, { availability }, { auth }) {
-      const user = await auth.getUser()
-      const { from, to } = availability
-
-      const instance = new Availability()
-      instance.user_id = user.id
-      instance.from = from
-      instance.to = to
-
-      await user.availabilities().save(instance)
-
-      return instance.toJSON()
-    },
-
-    async updateApplicationStatus(obj, { application_id, new_status }) {
-      const application = await Application.query().where('id', application_id).first()
-      application.application_status_id = new_status
-      await application.save()
+    async updateApplicationStatus(obj, information) {
+      const applicationService = await ApplicationService.newInstance(auth)
+      const application = await applicationService.updateStatus(information)
       return application.toJSON()
     }
   },
