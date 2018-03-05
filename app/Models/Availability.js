@@ -12,6 +12,16 @@ class Availability extends Model {
   user () {
     return this.belongsTo('App/Models/User')
   }
+  static get dates () {
+    return super.dates.concat(['from', 'to'])
+  }
+  static castDates (field, value) {
+    if (field === 'from' || field === 'to') {
+      return value.format('YYYY-MM-DD')
+    }
+    return super.formatDates(field, value)
+  }
+
 }
 
 module.exports = Availability
