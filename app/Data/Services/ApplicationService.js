@@ -1,9 +1,16 @@
 'use strict'
 
 const Logger = use('Logger')
-const Application = use('App/Models/Application')
 const db = use('Database')
+const Application = use('App/Models/Application')
+const AppException = use('App/Exceptions/AppException')
+const InputException = use('App/Exceptions/InputException')
 const authorize = use('App/Services/AuthorizationService')
+const {
+  PARAMETERS_INVALID,
+  PENDING_APPLICATION_EXISTS,
+  APPLICATION_STATUS_ALREADY_SET
+} = use('App/Exceptions/Codes')
 
 class ApplicationService {
   constructor(user) {
@@ -54,7 +61,7 @@ class ApplicationService {
       return paginated_applications
     } catch (queryError) {
       Logger.debug(queryError)
-      throw 'There was an error when retrieving the applications'
+      throw new InputException(PARAMETERS_INVALID)
     }
   }
 
@@ -80,11 +87,9 @@ class ApplicationService {
 
     const trx = await db.beginTransaction()
 
-    console.log(user)
-
     if (await user.hasPendingApplication(trx)) {
       trx.commit()
-      throw 'User has a pending application already'
+      throw new AppException(PENDING_APPLICATION_EXISTS)
     }
 
     for (let competence of competences) {
@@ -118,6 +123,11 @@ class ApplicationService {
       .transacting(trx)
       .where({id: application_id})
       .first()
+
+    if (application.application_status_id) {
+      throw new AppException(APPLICATION_STATUS_ALREADY_SET)
+    }
+
     application.application_status_id = new_status
     await application.save(trx)
     await trx.commit()

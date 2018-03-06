@@ -59,8 +59,6 @@ class User extends Model {
     .doesntHave('status')
     .fetch()
 
-    console.log(pending.toJSON())
-
     return pending.toJSON().length != 0
   }
 

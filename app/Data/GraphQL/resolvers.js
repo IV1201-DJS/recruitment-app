@@ -13,13 +13,9 @@ const UserService = use('App/Data/Services/UserService')
 const resolvers = {
   Query: {
     async Applications(obj, conditions, { auth }) {
-      try {
-        const applicationService = await ApplicationService.newInstance(auth)
-        const applications = await applicationService.fetchApplicationsByConditions(conditions)
-        return applications.toJSON()
-      } catch (error) {
-        throw new Error(error)
-      }
+      const applicationService = await ApplicationService.newInstance(auth)
+      const applications = await applicationService.fetchApplicationsByConditions(conditions)
+      return applications.toJSON()
     },
 
     async Application (obj, { id }, { auth }) {
