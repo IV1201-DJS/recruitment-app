@@ -1,7 +1,8 @@
-'use strict'
+'use strict';
 
 const Logger = use('Logger')
 const db = use('Database')
+const Availability = use('App/Models/Availability')
 const Application = use('App/Models/Application')
 const AppException = use('App/Exceptions/AppException')
 const InputException = use('App/Exceptions/InputException')
@@ -9,7 +10,8 @@ const authorize = use('App/Services/AuthorizationService')
 const {
   PARAMETERS_INVALID,
   PENDING_APPLICATION_EXISTS,
-  APPLICATION_STATUS_ALREADY_SET
+  APPLICATION_STATUS_ALREADY_SET,
+  AVAILABILITY_PARAMETERS_INVALID
 } = use('App/Exceptions/Codes')
 
 class ApplicationService {
@@ -60,7 +62,6 @@ class ApplicationService {
 
       return paginated_applications
     } catch (queryError) {
-      Logger.debug(queryError)
       throw new InputException(PARAMETERS_INVALID)
     }
   }
@@ -88,23 +89,15 @@ class ApplicationService {
     const trx = await db.beginTransaction()
 
     if (await user.hasPendingApplication(trx)) {
-      trx.commit()
+      await trx.commit()
       throw new AppException(PENDING_APPLICATION_EXISTS)
     }
 
-    for (let competence of competences) {
-      user.competences().attach(competence.id, row => {
-        row.experience_years = competence.experience_years
-      }, trx)
-    }
+    await this._saveCompetences(user, competences, trx)
+    await this._saveAvailabilities(user, availabilities, trx)
 
-    for (let availability of availabilities) {
-      user.availabilities().save(availability, trx)
-    }
-
-    const application = new Application()
-    application.user_id = user.id
-    await application.save(trx)
+    const application = await Application
+      .create({ user_id: user.id }, trx)
 
     await trx.commit()
 
@@ -133,6 +126,30 @@ class ApplicationService {
     await trx.commit()
 
     return application
+  }
+
+  /* TODO: could be in availability service */
+  async _saveAvailabilities(user, availabilities, trx) {
+    try {
+      for (let {from, to} of availabilities) {
+        await Availability.create({from, to, user_id: user.id }, trx)
+      }
+    } catch (e) {
+      throw new InputException(AVAILABILITY_PARAMETERS_INVALID)
+    }
+  }
+
+  /* TODO: could be in competence service */
+  async _saveCompetences(user, competences, trx) {
+    try {
+      for (let {id, experience_years} of competences) {
+        await user.competences().attach(id, row => {
+          row.experience_years = experience_years
+        }, trx)
+      }
+    } catch (e) {
+      throw new InputException(COMPETENCE_PARAMETERS_INVALID)
+    }
   }
 
   _filterByStatus(applications, status_id) {
