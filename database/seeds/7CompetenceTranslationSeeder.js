@@ -19,7 +19,9 @@ class CompetenceTranslationSeeder {
     const langs = [1, 2]
     for (let competence_id of competences) {
       for (let language_id of langs) {
-        const { translation } = await Factory.model('App/Models/CompetenceTranslation').make()
+        let { translation } = await Factory.model('App/Models/CompetenceTranslation').make()
+        const prefix = language_id == 1 ? 'sv_' : 'en_'
+        translation = prefix + translation
         await CompetenceTranslation.create({competence_id, language_id, translation})
       }
     }

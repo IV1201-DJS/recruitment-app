@@ -19,7 +19,9 @@ class RoleTranslationSeeder {
     const langs = [1, 2]
     for (let role_id of roles) {
       for (let language_id of langs) {
-        const { translation } = await Factory.model('App/Models/RoleTranslation').make()
+        let { translation } = await Factory.model('App/Models/RoleTranslation').make()
+        const prefix = language_id == 1 ? 'sv_' : 'en_'
+        translation = prefix + translation
         await RoleTranslation.create({role_id, language_id, translation})
       }
     }
