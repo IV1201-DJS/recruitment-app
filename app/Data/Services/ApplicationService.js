@@ -104,6 +104,25 @@ class ApplicationService {
     return application
   }
 
+  async updateStatus(information) {
+    const {
+      application_id,
+      new_status
+    } = information
+
+    const trx = await db.beginTransaction()
+    const application = await Application
+      .query()
+      .transacting(trx)
+      .where({id: application_id})
+      .first()
+    application.application_status_id = new_status
+    await application.save(trx)
+    await trx.commit()
+
+    return application
+  }
+
   _filterByStatus(applications, status_id) {
     if (!status_id) {
       return applications
