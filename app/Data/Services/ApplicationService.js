@@ -16,7 +16,7 @@ class ApplicationService {
    */
   static async newInstance(auth, role_names = ['RECRUITER']) {
     await authorize.byRoles(auth, role_names)
-    return new ApplicationService(auth.getUser())
+    return new ApplicationService(await auth.getUser())
   }
 
   /**
@@ -79,6 +79,8 @@ class ApplicationService {
     } = information
 
     const trx = await db.beginTransaction()
+
+    console.log(user)
 
     if (await user.hasPendingApplication(trx)) {
       trx.commit()
