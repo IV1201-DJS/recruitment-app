@@ -7,7 +7,7 @@ const authorize = use('App/Services/AuthorizationService')
 class ApplicationStatusService {
   static async newInstance(auth, role_names = ['RECURITER']) {
     await authorize.byRoles(auth, role_names)
-    return new CompetenceService()
+    return new ApplicationStatusService()
   }
 
   async fetchAll() {
