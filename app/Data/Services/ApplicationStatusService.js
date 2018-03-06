@@ -5,7 +5,7 @@ const db = use('Database')
 const authorize = use('App/Services/AuthorizationService')
 
 class ApplicationStatusService {
-  static async newInstance(auth, role_names = ['RECURITER']) {
+  static async newInstance(auth, role_names = ['RECRUITER']) {
     await authorize.byRoles(auth, role_names)
     return new ApplicationStatusService()
   }
