@@ -37,14 +37,14 @@ const resolvers = {
     },
 
     async FindCompetences(obj, { name }, { auth }) {
-      const competenceService = await CompetenceService.newInstance(auth)
+      const competenceService = await CompetenceService.newInstance(auth, ['APPLICANT', 'RECRUITER'])
       const competences = await competenceService.fetchWithSimilarName(name)
 
       return competences.toJSON()
     },
 
     async AllCompetences(obj, args, { auth }) {
-      const competenceService = await CompetenceService.newInstance(auth)
+      const competenceService = await CompetenceService.newInstance(auth, ['APPLICANT', 'RECRUITER'])
       const competences = await competenceService.fetchAll()
 
       return competences.toJSON()
