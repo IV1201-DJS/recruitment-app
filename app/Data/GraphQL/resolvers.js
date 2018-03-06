@@ -122,6 +122,16 @@ const resolvers = {
     }
   },
 
+  Competence: {
+    async name(competenceAsJson, args, { language }) {
+      const competence = new Competence()
+      competence.newUp(competenceAsJson)
+      const translation = await competence.translatedTo(language)
+
+      return translation || competence.name
+    }
+  },
+
   UserCompetence: {
     async experience_years(competenceAsJson) {
       const competence = new Competence()
