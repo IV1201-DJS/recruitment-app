@@ -11,9 +11,7 @@ class AuthJwt {
    * @memberof AuthJwt
    */
   async handle ({ request, auth }, next) {
-    if (Env.get('NODE_ENV') != 'development') {
-      await auth.check()
-    }
+    await auth.check()
     await next()
   }
 }
