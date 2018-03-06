@@ -24,13 +24,34 @@ class UserMigrator {
   }
 
   /**
+   * Attempts to migrate a user.
+   *
+   * @param {Object} legacyUserData
+   * @memberof UserController
+   * @private
+   */
+  async attemptMigration (legacyUserData) {
+    const isComplete = await this._isCompleteUser(legacyUserData)
+    if (!isComplete) {
+      const legacyUser = new LegacyUser()
+      legacyUser.newUp(legacyUserData)
+      throw legacyUser.toJSON()
+    }
+    try {
+      await this._migrate(legacyUserData)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
    * Determines if a legacy user has a complete profile
    *
    * @param {Object} legacyData
    * @returns {boolean}
    * @memberof UserMigrator
    */
-  async isCompleteUser(legacyData) {
+  async _isCompleteUser(legacyData) {
     const validation = await validate(legacyData, {
       name: 'required',
       surname: 'required',
@@ -51,7 +72,7 @@ class UserMigrator {
    * @param {Object} legacyData {name, surname, ssn, email, password, role_id, username}
    * @memberof UserMigrator
    */
-  async migrate (legacyData) {
+  async _migrate (legacyData) {
     await this.newDB.transaction(this._transactionCallback(legacyData))
   }
 

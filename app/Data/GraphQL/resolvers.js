@@ -69,7 +69,7 @@ const resolvers = {
       return application.toJSON()
     },
 
-    async updateApplicationStatus(obj, information) {
+    async updateApplicationStatus(obj, information, { auth }) {
       const applicationService = await ApplicationService.newInstance(auth)
       const application = await applicationService.updateStatus(information)
       return application.toJSON()
