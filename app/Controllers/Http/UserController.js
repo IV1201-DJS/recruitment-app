@@ -4,7 +4,7 @@ const http = require('http-status-codes')
 const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
-const UserService = use('App/Data/Services/UserService')
+const MigrationService = use('App/Services/MigrationService')
 const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
 const RestResponse = use('App/Data/REST/RestResponse')
 
@@ -16,15 +16,13 @@ const RestResponse = use('App/Data/REST/RestResponse')
 class UserController {
   constructor () {
     this.legacyDB = new LegacyDatabase()
-    this.userService = new UserService()
+    this.migrationService = new MigrationService()
   }
 
   /**
    * Stores a user in the database
    *
-   * @param {Object} { request }
-   * @returns User
-   * @memberof UserController
+   * @returns { User }
    */
   async store ({ request, response }) {
     const rules = {
@@ -56,15 +54,12 @@ class UserController {
   }
 
   /**
-   * Attempts to log in the user if they exist.
-   * If not, searches legacy database for old user and attempts migration.
+   * Logs in existing users
    *
-   * @param {Object} { request, response, auth }
-   * @returns RestResponse
-   * @memberof UserController
+   * @returns { RestResponse }
    */
   async login ({ request, response, auth }) {
-    const { 
+    const {
       username,
       password
     } = request.all()
@@ -73,7 +68,11 @@ class UserController {
       username: 'required',
       password: 'required'
     }
-    const validation = await validateAll({ username, password }, rules)
+
+    const validation = await validateAll({
+      username,
+      password
+    }, rules)
 
     if (validation.fails()) {
       return new RestResponse(
@@ -87,35 +86,49 @@ class UserController {
       const { token } = await auth.attempt(username, password)
       return new RestResponse(response, http.OK, { token })
     } catch (noUser) {
-      return response.status(401).json({ message: 'NO' })
-      /*
-
-      const legacyUserData = await this.legacyDB.getUserByLogin(username, password)
-      if (!legacyUserData) {
-        return new RestResponse(
-          response,
-          http.UNAUTHORIZED,
-          'The username or password was incorrect'
-        )
-      }
-      try {
-        await this.userMigrator.attemptMigration(legacyUserData)
-        const { token } = await auth.attempt(username, password)
-        return new RestResponse(
-          response,
-          http.OK,
-          { token }
-        )
-      } catch (legacyUser) { // TODO: re-think this because its not very safe
-        return new RestResponse(
-          response,
-          http.CONFLICT,
-          { legacyUser }
-        )
-      }
-
-       */
+      return new RestResponse(
+        response,
+        http.UNAUTHORIZED,
+        'The username or password was incorrect'
+      )
     }
+  }
+
+  /**
+   * Migrates a user from the old database
+   * @returns { RestResponse }
+   * @throws { IncompleteProfileException }
+   */
+  async migrate ({ request, response }) {
+    const newData = request.only([
+      'name',
+      'surname',
+      'ssn',
+      'email',
+      'role_id',
+      'username',
+      'password'
+    ])
+
+    const oldData = await this.migrationService
+      .findLegacyData(newData.username, newData.password)
+
+    if (!oldData) {
+      return new RestResponse(
+        response,
+        http.UNAUTHORIZED,
+        'The username or password was incorrect'
+      )
+    }
+
+    const user = await this.migrationService
+      .attemptMigration(newData, oldData)
+
+    return new RestResponse(
+      response,
+      http.CREATED,
+      { user: user.toJSON() }
+    )
   }
 }
 
