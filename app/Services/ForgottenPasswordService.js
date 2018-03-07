@@ -4,7 +4,10 @@ const nodemailer = require('nodemailer')
 const passgen = require('generate-password')
 const Env = use('Env')
 const LegacyDatabaseHandler = use('App/Data/Handlers/LegacyDatabaseHandler')
-const AppException = use('App/Exceptions/AppException')
+const UnprocessableException = use('App/Exceptions/REST/UnprocessableException')
+const ResourceNotFoundException = use('App/Exceptions/REST/ResourceNotFoundException')
+const UnexpectedException = use('App/Exceptions/REST/UnexpectedException')
+
 const {
   EMAIL_NOT_FOUND,
   USERNAME_NOT_FOUND,
@@ -13,6 +16,12 @@ const {
   IDENTIFIERS_MISSING
 } = use('App/Exceptions/Codes')
 
+/** 
+ * Service for restoring forgotten passwords
+ * for legacy users
+ * 
+ * @class ForgottenPasswordService
+*/
 class ForgottenPasswordService {
   constructor() {
     this.legacyDB = new LegacyDatabaseHandler()
@@ -46,13 +55,13 @@ class ForgottenPasswordService {
       return this._mask(email)
     }
 
-    throw new InputException(IDENTIFIERS_MISSING)
+    throw new UnprocessableException(IDENTIFIERS_MISSING)
   }
 
   async _tryWithEmail(email) {
     const user = await this.legacyDB.getUserByEmail(email)
     if (!user) {
-      throw new InputException(EMAIL_NOT_FOUND)
+      throw new ResourceNotFoundException(EMAIL_NOT_FOUND)
     }
     return await this._proceed(user, {email})
   }
@@ -60,7 +69,7 @@ class ForgottenPasswordService {
   async _tryWithUsername(username) {
     const user = await this.legacyDB.getUserByUsername(username)
     if (!user) {
-      throw new InputException(USERNAME_NOT_FOUND)
+      throw new ResourceNotFoundException(USERNAME_NOT_FOUND)
     }
     return await this._proceed(user, {username})
   }
@@ -68,7 +77,7 @@ class ForgottenPasswordService {
   async _tryWithSSN(ssn) {
     const user = await this.legacyDB.getUserBySSN(ssn)
     if (!user) {
-      throw new InputException(SSN_NOT_FOUND)
+      throw new ResourceNotFoundException(SSN_NOT_FOUND)
     }
     return await this._proceed(user, {ssn})
   }
@@ -90,12 +99,13 @@ class ForgottenPasswordService {
 
   async _sendEmail(user, password) {
     if (!user.email) {
-      throw new AppException(USER_EMAIL_MISSING)
+      throw new UnexpectedException(USER_EMAIL_MISSING)
     }
     try {
-      await this.mailer.sendMail(this._getMailOptions(user.email, password))
-    } catch(err) {
-      throw new AppException(err)
+      const options = this._getMailOptions(user.email, password)
+      await this.mailer.sendMail(options)
+    } catch(error) {
+      throw new UnexpectedException(error)
     }
   }
 
@@ -111,10 +121,13 @@ class ForgottenPasswordService {
 
   _getMailOptions(email, password) {
     return {
-      from: Env.get('GMAIL_ADDRESS'), // sender address
-      to: email, // list of receivers
-      subject: 'Your password to the recruitment website', // Subject line
-      html: `<p>Your password to the recruitment website is:</p><pre>${password}</pre>`// plain text body
+      from: Env.get('GMAIL_ADDRESS'),
+      to: email,
+      subject: 'Your password to the recruitment website',
+      html: `
+      <p>Your password to the recruitment website is:</p>
+      <pre>${password}</pre>
+      `
     }
   }
 

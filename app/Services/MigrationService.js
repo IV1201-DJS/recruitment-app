@@ -1,13 +1,17 @@
 'use strict'
 
+const Hash = use('Hash')
+const moment = require('moment')
 const { validateAll } = use('Validator')
 const User = use('App/Models/User')
+const Role = use('App/Models/Role')
 const Availability = use('App/Models/Availability')
 const LegacyUser = use('App/Models/LegacyUser')
 const LegacyDatabaseHandler = use('App/Data/Handlers/LegacyDatabaseHandler')
-const IncompleteProfileException = use('App/Exceptions/REST/IncompleteProfileException')
-const Hash = use('Hash')
-const moment = require('moment')
+const ValidationException = use('App/Exceptions/REST/ValidationException')
+const ResourceNotFoundException = use('App/Exceptions/REST/ResourceNotFoundException')
+const { CREDENTIALS_INCORRECT } = use('App/Exceptions/Codes')
+
 
 /**
  * Service for migrating old users to the new database
@@ -22,28 +26,26 @@ class MigrationService {
   }
 
   /**
-   * Retrieves potential legacy user data
-   * 
-   * @param {String} username 
-   * @param {String} password
-   * @returns {Object}
-   */
-  async findLegacyData(username, password) {
-    return await this.legacyDB.getUserByLogin(username, password)
-  }
-
-  /**
    * Attempts to migrate an old user
    * 
    * @param {Object} newData 
    * @param {Object} oldData
    * @returns {User}
    */
-  async attemptMigration (newData, oldData) {
-    const missingData = await this._isMissingData(newData)
-    if (missingData) {
-      throw new IncompleteProfileException(missingData)
+  async attemptMigration (newData) {
+    const oldData = await this.legacyDB
+      .getUserByLogin(newData.username, newData.password)
+
+    if (!oldData) {
+      throw new ResourceNotFoundException(CREDENTIALS_INCORRECT)
     }
+
+    const missingData = await this._isMissingData(newData)
+
+    if (missingData) {
+      throw new ValidationException(missingData)
+    }
+
     return await this._migrate(newData, oldData)
   }
 
@@ -72,19 +74,26 @@ class MigrationService {
   }
 
   async _migrateUser (trx, newData, oldData) {
-    const userMapping = await this._getUserMapping(newData, oldData, new Date())
+    const userMapping = await this._getUserMapping(newData, oldData, trx)
     userMapping.password = await this.hash(userMapping.password)
     return await User.create(userMapping, trx)
   }
 
-  async _getUserMapping (newData, oldData, date) {
+  async _getUserMapping (newData, oldData, trx) {
+    const date = new Date()
     const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss"
+    const default_role = await Role
+      .query()
+      .transacting(trx)
+      .where({ name: 'APPLICANT' })
+      .first()
+
     return {
       firstname: newData.name,
       lastname: newData.surname,
       ssn: newData.ssn,
       email: newData.email,
-      role_id: oldData.role_id || 1,
+      role_id: oldData.role_id || default_role.id,
       username: newData.username,
       password: newData.password,
       created_at: moment(date).format(DATE_FORMAT),
