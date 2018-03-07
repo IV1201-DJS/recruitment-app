@@ -8,10 +8,6 @@ const Database = use('Database')
  * @class LegacyDatabaseHandler
  */
 class LegacyDatabaseHandler {
-  /**
-   * Creates an instance of LegacyDatabaseHandler.
-   * @memberof LegacyDatabaseHandler
-   */
   constructor () {
     this.db = Database.connection('legacy')
   }
@@ -36,7 +32,7 @@ class LegacyDatabaseHandler {
    * @memberof LegacyDatabaseHandler
    */
   async getCompetenceProfiles(person_id) {
-    return await this.db.table('competence_profile').where({ person_id })
+    return await this.db.from('competence_profile').where({ person_id })
   }
 
   /**
@@ -47,7 +43,7 @@ class LegacyDatabaseHandler {
    * @memberof LegacyDatabaseHandler
    */
   async getAvailabilities(person_id) {
-    return await this.db.table('availability').where({ person_id })
+    return await this.db.from('availability').where({ person_id })
   }
 }
 

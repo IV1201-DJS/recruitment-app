@@ -1,7 +1,19 @@
 'use strict'
 const db = use('Database')
 
+/** 
+ * Service for authorizing a user
+ * 
+ * @class AuthorizationService
+*/
 class AuthorizationService {
+  /**
+   * Checks if the current user
+   * is authorized based on role
+   * 
+   * @param {Auth} auth 
+   * @param {Array} role_names 
+   */
   static async byRoles(auth, role_names) {
     let user, role
     try {
