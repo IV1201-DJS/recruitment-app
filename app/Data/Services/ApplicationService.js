@@ -8,7 +8,7 @@ const AppException = use('App/Exceptions/AppException')
 const InputException = use('App/Exceptions/InputException')
 const authorize = use('App/Services/AuthorizationService')
 const {
-  PARAMETERS_INVALID,
+  CONDITIONS_INVALID,
   PENDING_APPLICATION_EXISTS,
   APPLICATION_STATUS_ALREADY_SET,
   AVAILABILITY_PARAMETERS_INVALID
@@ -62,7 +62,7 @@ class ApplicationService {
 
       return paginated_applications
     } catch (queryError) {
-      throw new InputException(PARAMETERS_INVALID)
+      throw new InputException(CONDITIONS_INVALID)
     }
   }
 
@@ -152,11 +152,11 @@ class ApplicationService {
     }
   }
 
-  _filterByStatus(applications, status_id) {
-    if (!status_id) {
+  _filterByStatus(applications, application_status_id) {
+    if (!application_status_id) {
       return applications
     }
-    return applications.where({ status_id })
+    return applications.where({ application_status_id })
   }
 
   _filterByCompetences(applications, competence_ids) {

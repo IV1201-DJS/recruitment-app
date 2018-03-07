@@ -16,8 +16,7 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 class ApplicationStatusSeeder {
   async run () {
     const statuses = ['ACCEPTED', 'DECLINED']
-    const queries = statuses.map(name => ApplicationStatus.create({ name }))
-    await Promise.all(queries)
+    statuses.map(async name => await ApplicationStatus.create({ name }))
   }
 }
 
