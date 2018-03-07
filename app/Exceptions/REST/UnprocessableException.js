@@ -2,12 +2,12 @@
 
 const { LogicalException } = require('@adonisjs/generic-exceptions')
 
-class IncompleteProfileException extends LogicalException {
+class UnprocessableException extends LogicalException {
   handle ({ message }, { response }) {
     response
       .status(422)
-      .json(message)
+      .json({ error: message })
   }
 }
 
-module.exports = IncompleteProfileException
+module.exports = UnprocessableException

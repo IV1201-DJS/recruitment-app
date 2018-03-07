@@ -16,7 +16,7 @@ const Language = use('App/Models/Language')
 class LanguageSeeder {
   async run () {
     const langs = ['sv', 'en']
-    const queries = await langs.forEach(async name => await Language.create({ name }))
+    await langs.map(async name => await Language.create({ name }))
   }
 }
 

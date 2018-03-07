@@ -14,7 +14,7 @@ const Factory = use('Factory')
 
 class UserSeeder {
   async run () {
-    const usernames = ['applicant', 'recruiter', 'admin']
+    const usernames = ['recruiter', 'applicant', 'admin']
     usernames.map(async (name, index) => {
       await Factory.model('App/Models/User').create({ role_id: (index+1), username: name })
     })
