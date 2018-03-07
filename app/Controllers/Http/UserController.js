@@ -5,8 +5,8 @@ const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
 const MigrationService = use('App/Services/MigrationService')
-const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
 const RestResponse = use('App/Data/REST/RestResponse')
+const ForgottenPasswordService = use('App/Services/ForgottenPasswordService')
 
 /**
  * Controller for creating and authenticating users
@@ -15,7 +15,7 @@ const RestResponse = use('App/Data/REST/RestResponse')
  */
 class UserController {
   constructor () {
-    this.legacyDB = new LegacyDatabase()
+    this.passwordService = new ForgottenPasswordService()
     this.migrationService = new MigrationService()
   }
 
@@ -92,6 +92,21 @@ class UserController {
         'The username or password was incorrect'
       )
     }
+  }
+
+  /**
+   * Attempts to restore the password for a user
+   * @returns { RestResponse }
+   * @throws { IncompleteProfileException }
+   */
+  async restorePassword ({ request, response }) {
+    const knownInfo = request.only(['ssn', 'username', 'email'])
+    const emailed = await this.passwordService.helpRestoreFrom(knownInfo)
+    return new RestResponse(
+      response,
+      http.OK,
+      { emailed }
+    )
   }
 
   /**

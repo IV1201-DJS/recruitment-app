@@ -50,6 +50,14 @@ Route.post('/api/migrate', 'UserController.migrate')
 
 
 /**
+ * Restore the password of an old user
+ *
+ * @returns A User object
+ */
+Route.post('/api/restore-password', 'UserController.restorePassword')
+
+
+/**
  * Bind jwt-protected graphql endpoint
  *
  * @returns Requested JSON-data

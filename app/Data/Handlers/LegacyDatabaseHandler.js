@@ -45,6 +45,22 @@ class LegacyDatabaseHandler {
   async getAvailabilities(person_id) {
     return await this.db.from('availability').where({ person_id })
   }
+
+  async getUserByEmail(email) {
+    return await this.db.table('person').where({ email }).first()
+  }
+
+  async getUserByUsername(username) {
+    return await this.db.table('person').where({ username }).first()
+  }
+
+  async getUserBySSN(ssn) {
+    return await this.db.table('person').where({ ssn }).first()
+  }
+
+  async replaceUserPassword(identifier, password) {
+    await this.db.table('person').where(identifier).update({password})
+  }
 }
 
 module.exports = LegacyDatabaseHandler
