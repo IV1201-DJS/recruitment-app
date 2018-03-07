@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/IV1201-DJS/recruitment-backend/tree/development.svg?style=svg)](https://circleci.com/gh/IV1201-DJS/recruitment-backend/tree/development)
+
 # Adonis API application
 
 This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.

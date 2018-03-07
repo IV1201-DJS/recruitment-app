@@ -1,99 +1,134 @@
 'use strict'
 
-const { validate } = use('Validator')
+const http = require('http-status-codes')
+const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
-const UserMigrator = use('App/Services/UserMigrator')
+const MigrationService = use('App/Services/MigrationService')
 const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
-const LoginResponse = use('App/Data/REST/LoginResponse')
-
+const RestResponse = use('App/Data/REST/RestResponse')
 
 /**
  * Controller for creating and authenticating users
- * 
+ *
  * @class UserController
  */
 class UserController {
   constructor () {
     this.legacyDB = new LegacyDatabase()
+    this.migrationService = new MigrationService()
   }
 
   /**
    * Stores a user in the database
-   * 
-   * @param {Object} { request } 
-   * @returns User
-   * @memberof UserController
+   *
+   * @returns { User }
    */
-  async store ({ request }) {
+  async store ({ request, response }) {
     const rules = {
       username: 'required|unique:users,username',
       password: 'required',
       email: 'required|email|unique:users,email',
       firstname: 'required',
       lastname: 'required',
-      ssn: 'required|unique:users,ssn' 
+      ssn: 'required|unique:users,ssn'
     }
 
     const userData = request.only(Object.keys(rules))
-    const validation = await validate(userData, rules)
+    const validation = await validateAll(userData, rules)
 
     if (validation.fails()) {
-      return validation.messages()
+      return new RestResponse(
+        response,
+        http.UNPROCESSABLE_ENTITY,
+        { errors: validation.messages() }
+      )
     }
-    
-    // TODO: LEIFY IT UP
-    userData.role_id = 1
 
-    return await User.create(userData)
+    const user = await User.create(userData)
+    return new RestResponse(
+      response,
+      http.CREATED,
+      { user }
+    )
   }
 
   /**
-   * Attempts to log in the user if they exist.
-   * If not, searches legacy database for old user and attempts migration.
-   * 
-   * @param {Object} { request, response, auth } 
-   * @returns LoginResponse
-   * @memberof UserController
+   * Logs in existing users
+   *
+   * @returns { RestResponse }
    */
   async login ({ request, response, auth }) {
-    const { username, password } = request.all()
+    const {
+      username,
+      password
+    } = request.all()
+
+    const rules = {
+      username: 'required',
+      password: 'required'
+    }
+
+    const validation = await validateAll({
+      username,
+      password
+    }, rules)
+
+    if (validation.fails()) {
+      return new RestResponse(
+        response,
+        http.UNPROCESSABLE_ENTITY,
+        { errors: validation.messages() }
+      )
+    }
 
     try {
       const { token } = await auth.attempt(username, password)
-      return new LoginResponse(response, 200, { token })
+      return new RestResponse(response, http.OK, { token })
     } catch (noUser) {
-      const legacyUserData = await this.legacyDB.getUserByLogin(username, password)
-      if (!legacyUserData) {
-        return new LoginResponse(response, 401, { 
-          message: 'The username or password was incorrect' 
-        })
-      }
-      try {
-        await this.handleUserMigration(legacyUserData)
-        const { token } = await auth.attempt(username, password)
-        return new LoginResponse(response, 200, { token })
-      } catch (legacyUser) { // TODO: re-think this because its not very safe
-        return new LoginResponse(response, 409, { legacyUser })
-      }
+      return new RestResponse(
+        response,
+        http.UNAUTHORIZED,
+        'The username or password was incorrect'
+      )
     }
   }
 
   /**
-   * Attempts to migrate a user.
-   * 
-   * @param {Object} legacyUserData 
-   * @memberof UserController
+   * Migrates a user from the old database
+   * @returns { RestResponse }
+   * @throws { IncompleteProfileException }
    */
-  async handleUserMigration (legacyUserData) {
-    const migrator = new UserMigrator()
-    const isComplete = await this.migrator.isCompleteUser(legacyUserData)
-    if (!isComplete) {
-      const legacyUser = new LegacyUser()
-      legacyUser.newUp(legacyUserData)
-      throw legacyUser.toJSON()
+  async migrate ({ request, response }) {
+    const newData = request.only([
+      'name',
+      'surname',
+      'ssn',
+      'email',
+      'role_id',
+      'username',
+      'password'
+    ])
+
+    const oldData = await this.migrationService
+      .findLegacyData(newData.username, newData.password)
+
+    if (!oldData) {
+      return new RestResponse(
+        response,
+        http.UNAUTHORIZED,
+        'The username or password was incorrect'
+      )
     }
-    await migrator.migrate(legacyUserData)
+
+    const user = await this.migrationService
+      .attemptMigration(newData, oldData)
+
+    return new RestResponse(
+      response,
+      http.CREATED,
+      { user: user.toJSON() }
+    )
   }
 }
 

@@ -1,56 +1,102 @@
 'use strict'
 
 const Logger = use('Logger')
+const Application = use('App/Models/Application')
+const Competence = use('App/Models/Competence')
 const User = use('App/Models/User')
 const Role = use('App/Models/Role')
-const Availability = use('App/Models/Availability')
-const Competence = use('App/Models/Competence')
-const RoleTranslation = use('App/Models/RoleTranslation')
-const CompetenceTranslation = use('App/Models/CompetenceTranslation')
-const Language = use('App/Models/Language')
+const ApplicationStatusService = use('App/Data/Services/ApplicationStatusService')
+const ApplicationService = use('App/Data/Services/ApplicationService')
+const CompetenceService = use('App/Data/Services/CompetenceService')
+const UserService = use('App/Data/Services/UserService')
 
 const resolvers = {
   Query: {
-    async Applications(obj, { competence_name }) {
-      const users = await User
-        .query()
-        .whereHas('competences', builder => {
-          builder
-            .where('competences.name', competence_name)
-        })
-        .fetch()
-
-      return users.toJSON()
+    async Applications(obj, conditions, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth)
+      const applications = await applicationService.fetchApplicationsByConditions(conditions)
+      return applications.toJSON()
     },
 
-    async User(obj, { id }) {
-      const user = await User.findOrFail(id)
+    async Application (obj, { id }, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth)
+      const application = await applicationService.fetchById(id)
+
+      return application.toJSON()
+    },
+
+    async User(obj, { id }, { auth }) {
+      const userService = await UserService.newInstance(auth)
+      const user = await userService.fetchById(id)
 
       return user.toJSON()
     },
 
-    async Competences(obj, { name }) {
-      const competences = await Competence.query().where('name', 'ilike', `%${name}%`).fetch()
+    async FindCompetences(obj, { name }, { auth }) {
+      const competenceService = await CompetenceService.newInstance(auth, ['APPLICANT', 'RECRUITER'])
+      const competences = await competenceService.fetchWithSimilarName(name)
+
+      return competences.toJSON()
+    },
+
+    async AllCompetences(obj, args, { auth }) {
+      const competenceService = await CompetenceService.newInstance(auth, ['APPLICANT', 'RECRUITER'])
+      const competences = await competenceService.fetchAll()
+
       return competences.toJSON()
     },
 
     async CurrentUser(obj, args, { auth }) {
       return await auth.getUser()
+    },
+
+    async AllApplicationStatuses(obj, args, { auth }) {
+      const applicationStatusService = await ApplicationStatusService.newInstance(auth)
+      const statuses = await applicationStatusService.fetchAll()
+
+      return statuses.toJSON()
     }
   },
 
   Mutation: {
-    async addCompetences(objc, { competenceID, experience_years }, { auth }) {
-      const user = await auth.getUser()
-      const res = await user.competences().attach(competenceID, row => {
-        row.experience_years = experience_years
-      })
-      
-      return user
+    async addApplication(obc, information, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth, ['APPLICANT'])
+      const application = await applicationService.createApplication(information)
+      return application.toJSON()
+    },
+
+    async updateApplicationStatus(obj, information, { auth }) {
+      const applicationService = await ApplicationService.newInstance(auth)
+      const application = await applicationService.updateStatus(information)
+      return application.toJSON()
     }
   },
 
+  Application: {
+    async user(applicationInJson) {
+      const application = new Application()
+      application.newUp(applicationInJson)
+      const user = await application.user().fetch()
+
+      return user.toJSON()
+    },
+
+    async status(applicationInJson) {
+      const application = new Application()
+      application.newUp(applicationInJson)
+      const status = await application.status().fetch()
+      return status ? status.toJSON() : null
+    },
+
+    async date_of_registration(applicationInJson) {
+      return applicationInJson.created_at
+    },
+  },
   User: {
+    /**
+     * @param {any} userInJson
+     * @returns any
+     */
     async availabilities(userInJson) {
       const user = new User()
       user.newUp(userInJson)
@@ -76,6 +122,16 @@ const resolvers = {
     }
   },
 
+  Competence: {
+    async name(competenceAsJson, args, { language }) {
+      const competence = new Competence()
+      competence.newUp(competenceAsJson)
+      const translation = await competence.translatedTo(language)
+
+      return translation || competence.name
+    }
+  },
+
   UserCompetence: {
     async experience_years(competenceAsJson) {
       const competence = new Competence()
@@ -88,6 +144,7 @@ const resolvers = {
       const competence = new Competence()
       competence.newUp(competenceAsJson)
       const translation = await competence.translatedTo(language)
+
       return translation || competence.name
     }
   },
@@ -97,6 +154,7 @@ const resolvers = {
       const role = new Role()
       role.newUp(roleAsJson)
       const translation = await role.translatedTo(language)
+
       return translation || role.name
     }
   }

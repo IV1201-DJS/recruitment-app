@@ -15,14 +15,16 @@ const RoleTranslation = use('App/Models/RoleTranslation')
 
 class RoleTranslationSeeder {
   async run () {
-    const roles = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const langs = [1, 2, 3, 4, 5]
-    await roles.forEach(async role_id => {
-      await langs.forEach(async language_id => {
-        const { translation } = await Factory.model('App/Models/RoleTranslation').make()
+    const roles = [1, 2, 3]
+    const langs = [1, 2]
+    for (let role_id of roles) {
+      for (let language_id of langs) {
+        let { translation } = await Factory.model('App/Models/RoleTranslation').make()
+        const prefix = language_id == 1 ? 'sv_' : 'en_'
+        translation = prefix + translation
         await RoleTranslation.create({role_id, language_id, translation})
-      })
-    })
+      }
+    }
   }
 }
 

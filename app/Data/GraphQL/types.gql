@@ -21,6 +21,18 @@ type Availability {
   to: String
 }
 
+type Application {
+  id: ID
+  user: User
+  status: ApplicationStatus
+  date_of_registration: String
+}
+
+type ApplicationStatus {
+  id: ID
+  name: String
+}
+
 type UserCompetence {
   id: ID
   name: String
@@ -54,14 +66,53 @@ type Period {
   to: String
 }
 
+type PaginatedApplications {
+  total: Int
+  perPage: Int
+  lastPage: Int
+  page: Int
+  data: [Application]
+}
+
+input AvailabilityInput {
+  from: String!
+  to: String!
+}
+
+input CompetenceInput {
+  id: ID!
+  experience_years: Float!
+}
+
 type Query {
   User(id: ID!): User
-  Applications(competence_name: String!): [User]
-  Competences(name: String!): [Competence]
+
+  Applications(status_id: ID,
+               competence_ids: [ID],
+               searched_availability: AvailabilityInput,
+               name: String,
+               date_of_registration: String,
+               page: Int!,
+               page_size: Int!): PaginatedApplications
+
+  Application(id: ID!): Application
+
+  FindCompetences(name: String): [Competence]
+
+  AllCompetences: [Competence]
+
   CurrentUser: User
 
+  AllApplicationStatuses: [ApplicationStatus]
 }
 
 type Mutation {
-  addCompetences(competenceID: ID!, experience_years: Float!): User
+  addApplication(competences: [CompetenceInput]!,
+                 availabilities: [AvailabilityInput]!): Application
+
+  addCompetence(competence_id: ID!, experience_years: Float!): User
+
+  addAvailability(availability: AvailabilityInput!): Availability
+
+  updateApplicationStatus(application_id: ID!, new_status: ID!): Application
 }

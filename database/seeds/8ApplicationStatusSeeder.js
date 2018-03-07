@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| LanguageSeeder
+| ApplicationStatusSeeder
 |--------------------------------------------------------------------------
 |
 | Make use of the Factory instance to seed database with dummy data or
@@ -11,13 +11,13 @@
 */
 
 const Factory = use('Factory')
-const Language = use('App/Models/Language')
+const ApplicationStatus = use('App/Models/ApplicationStatus')
 
-class LanguageSeeder {
+class ApplicationStatusSeeder {
   async run () {
-    const langs = ['sv', 'en']
-    const queries = await langs.forEach(async name => await Language.create({ name }))
+    const statuses = ['ACCEPTED', 'DECLINED']
+    await statuses.forEach(async name => await ApplicationStatus.create({ name }))
   }
 }
 
-module.exports = LanguageSeeder
+module.exports = ApplicationStatusSeeder

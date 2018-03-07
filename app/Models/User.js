@@ -5,7 +5,7 @@ const Model = use('Model')
 class User extends Model {
   /**
    * Retrieves the user's availabilities
-   * 
+   *
    * @returns {Collection}
    * @memberof User
    */
@@ -15,7 +15,7 @@ class User extends Model {
 
   /**
    * Retrieves the user's competences
-   * 
+   *
    * @returns {Collection}
    * @memberof User
    */
@@ -25,9 +25,13 @@ class User extends Model {
       .withPivot(['experience_years'])
   }
 
+  applications () {
+    return this.hasMany('App/Models/Application')
+  }
+
   /**
    * Retrieves the user's role
-   * 
+   *
    * @returns {Role}
    * @memberof User
    */
@@ -40,12 +44,26 @@ class User extends Model {
    * work. Since features like `refreshTokens` or
    * `rememberToken` will be saved inside the
    * tokens table.
-   * 
+   *
    * @returns {Object}
    * @memberof User
    */
   tokens () {
     return this.hasMany('App/Models/Token')
+  }
+
+  async hasPendingApplication (trx) {
+    const pending = await this.applications()
+    .transacting(trx)
+    .forShare()
+    .doesntHave('status')
+    .fetch()
+
+    return pending.toJSON().length != 0
+  }
+
+  static get hidden () {
+    return ['password']
   }
 
   static boot () {

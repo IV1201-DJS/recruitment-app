@@ -8,10 +8,6 @@ const Database = use('Database')
  * @class LegacyDatabaseHandler
  */
 class LegacyDatabaseHandler {
-  /**
-   * Creates an instance of LegacyDatabaseHandler.
-   * @memberof LegacyDatabaseHandler
-   */
   constructor () {
     this.db = Database.connection('legacy')
   }
@@ -21,7 +17,7 @@ class LegacyDatabaseHandler {
    * 
    * @param {String} username 
    * @param {String} password 
-   * @returns Object
+   * @returns {Object}
    * @memberof LegacyDatabaseHandler
    */
   async getUserByLogin(username, password) {
@@ -32,22 +28,22 @@ class LegacyDatabaseHandler {
    * Retrieves a legacy user's competence profiles if they exist
    * 
    * @param {Number} person_id 
-   * @returns Array
+   * @returns {Array}
    * @memberof LegacyDatabaseHandler
    */
   async getCompetenceProfiles(person_id) {
-    return await this.db.table('competence_profile').where({ person_id })
+    return await this.db.from('competence_profile').where({ person_id })
   }
 
   /**
    * Retrieves a legacy user's availabilities if they exist
    * 
    * @param {Number} person_id 
-   * @returns Array
+   * @returns {Array}
    * @memberof LegacyDatabaseHandler
    */
   async getAvailabilities(person_id) {
-    return await this.db.table('availability').where({ person_id })
+    return await this.db.from('availability').where({ person_id })
   }
 }
 

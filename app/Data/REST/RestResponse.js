@@ -1,9 +1,9 @@
 'use strict'
 
-class LoginResponse {
+class RestResponse {
   constructor (response, status, data) {
     this.body = response.status(status).json(data)
   }
 }
 
-module.exports = LoginResponse
+module.exports = RestResponse

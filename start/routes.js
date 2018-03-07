@@ -42,22 +42,30 @@ Route.post('/api/register', 'UserController.store')
 
 
 /**
+ * Migrate an old user
+ *
+ * @returns A User object
+ */
+Route.post('/api/migrate', 'UserController.migrate')
+
+
+/**
  * Bind jwt-protected graphql endpoint
  *
  * @returns Requested JSON-data
  */
 Route.route('/graphql', async ({ request, auth, response }) => {
-  const locale = request.header('locale')
-  const language = await new Language().setOrDefault(locale)
+  const headerLanguage = request.header('language') || 'en'
+  const language = await new Language().setOrDefault(headerLanguage)
   return GraphqlAdonis.graphql({
     schema,
-    context: { 
-      auth, 
+    context: {
+      auth,
       language
     }
   }, request, response)
 }, ['GET', 'POST'])
-  .middleware(['auth-jwt'])
+.middleware(['auth-jwt'])
 
 
   /**
