@@ -57,7 +57,7 @@ Route.post('/api/migrate', 'UserController.migrate')
 Route.post('/api/restore-password', 'UserController.restorePassword')
 
 
-Route.get('/:loaderio', ({ params }) => {
+Route.get('/:loaderio', async ({ params }) => {
   return params.loaderio
 })
 
