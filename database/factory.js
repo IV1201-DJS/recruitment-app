@@ -46,8 +46,8 @@ Factory.blueprint('App/Models/User', (faker, i, data) => {
 Factory.blueprint('App/Models/Availability', (faker) => {
   return {
     user_id: faker.integer({min: 1, max: 10}),
-    from: faker.date({year: 2017}),
-    to: faker.date({year: 2018})
+    from: faker.date({year: 2016}),
+    to: faker.date({year: 2017})
   }
 })
 
