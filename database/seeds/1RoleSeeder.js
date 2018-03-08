@@ -14,8 +14,10 @@ const Role = use('App/Models/Role')
 
 class RoleSeeder {
   async run () {
-    const roles = ['APPLICANT', 'RECRUITER', 'ADMIN']
-    roles.map(async name => await Role.create({ name }))
+    const roles = ['RECRUITER', 'APPLICANT', 'ADMIN']
+    for (let name of roles) {
+      await Role.create({ name })
+    }
   }
 }
 

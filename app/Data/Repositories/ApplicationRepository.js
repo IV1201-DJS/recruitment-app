@@ -34,7 +34,7 @@ class ApplicationService {
    * @param  {[type]}  conditions [description]
    * @return {Promise}            [description]
    */
-  async fetchApplicationsByConditions(conditions) {
+  async fetchByConditions(conditions) {
     const {
       status_id,
       competence_ids,
@@ -48,6 +48,7 @@ class ApplicationService {
     const trx = await db.beginTransaction()
     let applications = Application
       .query()
+      .orderBy('id', 'asc')
       .transacting(trx)
 
     applications = this._filterByStatus(applications, status_id)

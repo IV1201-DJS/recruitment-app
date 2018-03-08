@@ -1956,6 +1956,10 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+generate-password@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/generate-password/-/generate-password-1.4.0.tgz#a3f865c666f629c4f2852093466d83e7a0f16ee2"
+
 get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
@@ -3629,6 +3633,12 @@ node-res@^4.1.4:
     mime-types "^2.1.17"
     send "^0.16.1"
     vary "^1.1.2"
+
+nodemailer@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.6.2.tgz#1d0b34691d9f4b7ac5e6c240bccc1c9d025e3f67"
+  dependencies:
+    request "^2.83.0"
 
 nodemon@^1.14.12:
   version "1.14.12"

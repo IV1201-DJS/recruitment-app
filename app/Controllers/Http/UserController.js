@@ -5,8 +5,10 @@ const { validateAll } = use('Validator')
 const User = use('App/Models/User')
 const LegacyUser = use('App/Models/LegacyUser')
 const MigrationService = use('App/Services/MigrationService')
-const LegacyDatabase = use('App/Services/LegacyDatabaseHandler')
-const RestResponse = use('App/Data/REST/RestResponse')
+const ForgottenPasswordService = use('App/Services/ForgottenPasswordService')
+const ValidationException = use('App/Exceptions/REST/ValidationException')
+const UnauthorizedException = use('App/Exceptions/REST/UnauthorizedException')
+const { CREDENTIALS_INCORRECT } = use('App/Exceptions/Codes')
 
 /**
  * Controller for creating and authenticating users
@@ -15,14 +17,14 @@ const RestResponse = use('App/Data/REST/RestResponse')
  */
 class UserController {
   constructor () {
-    this.legacyDB = new LegacyDatabase()
+    this.passwordService = new ForgottenPasswordService()
     this.migrationService = new MigrationService()
   }
 
   /**
    * Stores a user in the database
    *
-   * @returns { User }
+   * @returns {User} created in the new database
    */
   async store ({ request, response }) {
     const rules = {
@@ -38,66 +40,59 @@ class UserController {
     const validation = await validateAll(userData, rules)
 
     if (validation.fails()) {
-      return new RestResponse(
-        response,
-        http.UNPROCESSABLE_ENTITY,
-        { errors: validation.messages() }
-      )
+      throw new ValidationException(validation.messages())
     }
-
+    
     const user = await User.create(userData)
-    return new RestResponse(
-      response,
-      http.CREATED,
-      { user }
-    )
+    
+    return response
+      .status(http.CREATED)
+      .json({ user })
   }
 
   /**
    * Logs in existing users
    *
-   * @returns { RestResponse }
+   * @returns {Token} used for further authentication
    */
   async login ({ request, response, auth }) {
-    const {
-      username,
-      password
-    } = request.all()
-
     const rules = {
       username: 'required',
       password: 'required'
     }
-
-    const validation = await validateAll({
-      username,
-      password
-    }, rules)
+    const credentials = request.only(Object.keys(rules))
+    const validation = await validateAll(credentials, rules)
 
     if (validation.fails()) {
-      return new RestResponse(
-        response,
-        http.UNPROCESSABLE_ENTITY,
-        { errors: validation.messages() }
-      )
+      throw new ValidationException(validation.messages())
     }
 
     try {
+      const { username, password } = credentials
       const { token } = await auth.attempt(username, password)
-      return new RestResponse(response, http.OK, { token })
-    } catch (noUser) {
-      return new RestResponse(
-        response,
-        http.UNAUTHORIZED,
-        'The username or password was incorrect'
-      )
+
+      return response.json({ token })
+    } catch (authError) {
+      throw new UnauthorizedException(CREDENTIALS_INCORRECT)
     }
   }
 
   /**
+   * Attempts to restore the password for a user
+   * @returns {Object} containing the address emailed to
+   * @throws {UnprocessableException, ResourceNotFoundException, UnexpectedException}
+   */
+  async restorePassword ({ request, response }) {
+    const knownInfo = request.only(['ssn', 'username', 'email'])
+    const emailed = await this.passwordService.helpRestoreFrom(knownInfo)
+
+    return response.json({ emailed })
+  }
+
+  /**
    * Migrates a user from the old database
-   * @returns { RestResponse }
-   * @throws { IncompleteProfileException }
+   * @returns {User} created in the new database
+   * @throws {ValidationException}
    */
   async migrate ({ request, response }) {
     const newData = request.only([
@@ -110,25 +105,12 @@ class UserController {
       'password'
     ])
 
-    const oldData = await this.migrationService
-      .findLegacyData(newData.username, newData.password)
-
-    if (!oldData) {
-      return new RestResponse(
-        response,
-        http.UNAUTHORIZED,
-        'The username or password was incorrect'
-      )
-    }
-
     const user = await this.migrationService
-      .attemptMigration(newData, oldData)
+      .attemptMigration(newData)
 
-    return new RestResponse(
-      response,
-      http.CREATED,
-      { user: user.toJSON() }
-    )
+    return response
+      .status(http.CREATED)
+      .json({ user })
   }
 }
 
