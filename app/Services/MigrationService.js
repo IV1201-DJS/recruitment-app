@@ -76,7 +76,6 @@ class MigrationService {
 
   async _migrateUser (trx, newData, oldData) {
     const userMapping = await this._getUserMapping(newData, oldData, trx)
-    userMapping.password = await this.hash(userMapping.password)
     return await User.create(userMapping, trx)
   }
 

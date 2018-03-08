@@ -16,7 +16,10 @@ const ApplicationStatus = use('App/Models/ApplicationStatus')
 class ApplicationStatusSeeder {
   async run () {
     const statuses = ['ACCEPTED', 'DECLINED']
-    await statuses.map(async name => await ApplicationStatus.create({ name }))
+
+    for (let name of statuses) {
+      await ApplicationStatus.create({ name })
+    }
   }
 }
 
