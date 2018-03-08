@@ -71,6 +71,7 @@ const resolvers = {
     async updateApplicationStatus(obj, information, { auth }) {
       const applicationRepository = await ApplicationRepository.newInstance(auth)
       const application = await applicationRepository.updateStatus(information)
+      Logger.info(`user '${applicationRepository.user.username}' updated status of application(id:${information.application_id})`)
       return application.toJSON()
     }
   },

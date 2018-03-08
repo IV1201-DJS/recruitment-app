@@ -3,6 +3,7 @@
 const http = require('http-status-codes')
 const { validateAll } = use('Validator')
 const User = use('App/Models/User')
+const Logger = use('Logger')
 const LegacyUser = use('App/Models/LegacyUser')
 const MigrationService = use('App/Services/MigrationService')
 const ForgottenPasswordService = use('App/Services/ForgottenPasswordService')
@@ -44,6 +45,7 @@ class UserController {
     }
     
     const user = await User.create(userData)
+    Logger.info(`${user.username} was sucessfully registered`)
     
     return response
       .status(http.CREATED)
@@ -70,6 +72,7 @@ class UserController {
     try {
       const { username, password } = credentials
       const { token } = await auth.attempt(username, password)
+      Logger.info(`${username} logged in`)
 
       return response.json({ token })
     } catch (authError) {
@@ -85,6 +88,7 @@ class UserController {
   async restorePassword ({ request, response }) {
     const knownInfo = request.only(['ssn', 'username', 'email'])
     const emailed = await this.passwordService.helpRestoreFrom(knownInfo)
+    Logger.info(`${emailed} was sent a password restoration email`)
 
     return response.json({ emailed })
   }
@@ -107,6 +111,8 @@ class UserController {
 
     const user = await this.migrationService
       .attemptMigration(newData)
+
+    Logger.info(`${user.username} was sucessfully migrated`)
 
     return response
       .status(http.CREATED)
