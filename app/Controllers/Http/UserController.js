@@ -42,7 +42,7 @@ class UserController {
     if (validation.fails()) {
       throw new ValidationException(validation.messages())
     }
-
+    
     const user = await User.create(userData)
     
     return response

@@ -69,6 +69,9 @@ class User extends Model {
   static boot () {
     super.boot()
     this.addHook('beforeCreate', 'User.hashPassword')
+    this.addHook('beforeCreate', async (userInstance) => {
+      userInstance.role_id = userInstance.role_id || 2
+    })
   }
 }
 
