@@ -57,6 +57,11 @@ Route.post('/api/migrate', 'UserController.migrate')
 Route.post('/api/restore-password', 'UserController.restorePassword')
 
 
+Route.get('/:loaderio', ({ params }) => {
+  return params.loaderio
+})
+
+
 /**
  * Bind jwt-protected graphql endpoint
  *
