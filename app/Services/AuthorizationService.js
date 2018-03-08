@@ -32,15 +32,11 @@ class AuthorizationService {
       throw new AppException(AUTHENTICATION_FAILED)
     }
   
-    const authorized = this._hasGodMode(role) || role_names.includes(role.name)
+    const authorized = (ADMIN_HAS_GODMODE && (role.name === 'ADMIN')) || role_names.includes(role.name)
     if (!authorized) {
       console.log(role.name, 'is not', role_names)
       throw new AppException(USER_UNAUTHORIZED)
     }
-  }
-
-  _hasGodMode(role) {
-    return ADMIN_HAS_GODMODE && (role.name === 'ADMIN')
   }
 }
 

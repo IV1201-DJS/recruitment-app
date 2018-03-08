@@ -9,7 +9,7 @@ const Model = use('Model')
  */
 class LegacyUser extends Model {
   static get hidden () {
-    return ['password', 'person_id']
+    return ['password']
   }
 }
 

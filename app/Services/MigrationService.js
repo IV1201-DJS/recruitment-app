@@ -9,6 +9,7 @@ const Availability = use('App/Models/Availability')
 const LegacyUser = use('App/Models/LegacyUser')
 const LegacyDatabaseHandler = use('App/Data/Handlers/LegacyDatabaseHandler')
 const ValidationException = use('App/Exceptions/REST/ValidationException')
+const MigrationException = use('App/Exceptions/REST/MigrationException')
 const ResourceNotFoundException = use('App/Exceptions/REST/ResourceNotFoundException')
 const { CREDENTIALS_INCORRECT } = use('App/Exceptions/Codes')
 
@@ -43,7 +44,7 @@ class MigrationService {
     const missingData = await this._isMissingData(newData)
 
     if (missingData) {
-      throw new ValidationException(missingData)
+      throw new MigrationException({missingData, oldData})
     }
 
     return await this._migrate(newData, oldData)

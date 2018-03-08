@@ -48,6 +48,7 @@ class ApplicationService {
     const trx = await db.beginTransaction()
     let applications = Application
       .query()
+      .orderBy('id', 'asc')
       .transacting(trx)
 
     applications = this._filterByStatus(applications, status_id)

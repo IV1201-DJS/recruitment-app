@@ -5,6 +5,7 @@ const Application = use('App/Models/Application')
 const Competence = use('App/Models/Competence')
 const User = use('App/Models/User')
 const Role = use('App/Models/Role')
+const ApplicationStatus = use('App/Models/ApplicationStatus')
 const ApplicationStatusRepository = use('App/Data/Repositories/ApplicationStatusRepository')
 const ApplicationRepository = use('App/Data/Repositories/ApplicationRepository')
 const CompetenceRepository = use('App/Data/Repositories/CompetenceRepository')
@@ -154,6 +155,16 @@ const resolvers = {
       const translation = await relations.fetchRelatedTranslation(role, language)
 
       return translation || role.name
+    }
+  },
+
+  ApplicationStatus: {
+    async name(statusAsJson, args, { language }) {
+      const status = new ApplicationStatus()
+      status.newUp(statusAsJson)
+      const translation = await relations.fetchRelatedTranslation(status, language)
+
+      return translation || status.name
     }
   }
 }
