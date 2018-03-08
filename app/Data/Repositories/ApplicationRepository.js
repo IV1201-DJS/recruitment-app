@@ -131,11 +131,13 @@ class ApplicationService {
 
   /* TODO: could be in availability service */
   async _saveAvailabilities(user, availabilities, trx) {
+    console.log(availabilities)
     try {
       for (let {from, to} of availabilities) {
         await Availability.create({from, to, user_id: user.id }, trx)
       }
     } catch (e) {
+      console.log(e)
       throw new InputException(AVAILABILITY_PARAMETERS_INVALID)
     }
   }
