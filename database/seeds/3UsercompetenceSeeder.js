@@ -16,7 +16,7 @@ const Competence = use('App/Models/Competence')
 
 class UsercompetenceSeeder {
   async run () {
-    const ids = [1,2,3,4,5,6,7,8,9,10]
+    const ids = [3,4,5,6,7,8,9,10]
     await Promise.all(ids.map(async id => {
       const user = await User.find(id)
 
