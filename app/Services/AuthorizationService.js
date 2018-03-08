@@ -29,6 +29,7 @@ class AuthorizationService {
     }
     const authorized = role.name === 'ADMIN' || role_names.includes(role.name)
     if (!authorized) {
+      console.log(role.name, 'is not', role_names)
       throw new Error('User not authorized') //TODO: Implement exceptions
     }
   }
