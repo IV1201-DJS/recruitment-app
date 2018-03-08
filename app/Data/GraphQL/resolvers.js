@@ -16,7 +16,7 @@ const resolvers = {
   Query: {
     async Applications(obj, conditions, { auth }) {
       const applicationRepository = await ApplicationRepository.newInstance(auth)
-      const applications = await applicationRepository.fetchApplicationsByConditions(conditions)
+      const applications = await applicationRepository.fetchByConditions(conditions)
       return applications.toJSON()
     },
 

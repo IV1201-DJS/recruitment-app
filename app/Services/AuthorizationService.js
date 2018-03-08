@@ -1,5 +1,9 @@
 'use strict'
 const db = use('Database')
+const Env = use('Env')
+const AppException = use('App/Exceptions/AppException')
+const { USER_UNAUTHORIZED, AUTHENTICATION_FAILED } = use('App/Exceptions/Codes')
+const ADMIN_HAS_GODMODE = Env.get('ADMIN_HAS_GODMODE', false)
 
 /** 
  * Service for authorizing a user
@@ -25,13 +29,18 @@ class AuthorizationService {
         .fetch()
       await trx.commit()
     } catch (authError) {
-      throw new Error('Could not authenticate user')
+      throw new AppException(AUTHENTICATION_FAILED)
     }
-    const authorized = role.name === 'ADMIN' || role_names.includes(role.name)
+  
+    const authorized = this._hasGodMode(role) || role_names.includes(role.name)
     if (!authorized) {
       console.log(role.name, 'is not', role_names)
-      throw new Error('User not authorized') //TODO: Implement exceptions
+      throw new AppException(USER_UNAUTHORIZED)
     }
+  }
+
+  _hasGodMode(role) {
+    return ADMIN_HAS_GODMODE && (role.name === 'ADMIN')
   }
 }
 

@@ -34,7 +34,7 @@ class ApplicationService {
    * @param  {[type]}  conditions [description]
    * @return {Promise}            [description]
    */
-  async fetchApplicationsByConditions(conditions) {
+  async fetchByConditions(conditions) {
     const {
       status_id,
       competence_ids,
