@@ -2,29 +2,44 @@
 
 const Model = use('Model')
 
+/**
+ * Represents a language to be used for translation
+ */
 class Language extends Model {
   /**
-   * Retrieves all competence translations in this language
+   * Retrieves a query for all associated competence translations
    * 
-   * @returns {Collection}
-   * @memberof Language
+   * @returns {HasMany}
    */
   competenceTranslations () {
     return this.hasMany('App/Models/CompetenceTranslation')
   }
 
   /**
-   * Retrieves all role translations in this language
+   * Retrieves a query for all associated role translations
    * 
-   * @returns {Collection}
-   * @memberof Language
+   * @returns {HasMany}
    */
   roleTranslations () {
     return this.hasMany('App/Models/RoleTranslation')
   }
 
-  async setOrDefault (locale) {
-    const newLang = await Language.query().where('name', locale).first()
+  /**
+   * Retrieves a query for all associated application status translations
+   * 
+   * @returns {HasMany}
+   */
+  applicationStatusTranslations () {
+    return this.hasMany('App/Models/ApplicationStatusTranslation')
+  }
+
+  /**
+   * Attempts to instantiate the desired language
+   * Else, defaults to the default language
+   * @param {String} name 
+   */
+  async setOrDefault (name) {
+    const newLang = await Language.query().where('name', name).first()
     const defaultLang = await Language.findOrFail(1)
     this.newUp((newLang && newLang.toJSON()) || defaultLang.toJSON())
     return this

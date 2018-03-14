@@ -3,22 +3,25 @@
 const Model = use('Model')
 const Language = use('App/Models/Language')
 
+/**
+ * Represents a work-related competence
+ * 
+ * @class Competence
+ */
 class Competence extends Model {
   /**
-   * Retrieves all translations for this competence
+   * Retrieves a query for all associated translations
    * 
    * @returns {HasMany}
-   * @memberof Competence
    */
   translations () {
     return this.hasMany('App/Models/CompetenceTranslation')
   }
 
   /**
-   * Retrieves all users with this competence
+   * Retrieves a query for all users with this competence
    * 
-   * @returns {BelongsToMany}
-   * @memberof Competence
+   * @returns {belongsToMany}
    */
   users () {
     return this

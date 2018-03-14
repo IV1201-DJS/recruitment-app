@@ -2,9 +2,14 @@
 
 const Model = use('Model')
 
+/**
+ * Represents the status of an application
+ * 
+ * @class ApplicationStatus
+ */
 class ApplicationStatus extends Model {
   /**
-   * Retrieves the associated application
+   * Retrieves a query for the associated application
    * 
    * @returns {HasMany}
    */
@@ -13,7 +18,7 @@ class ApplicationStatus extends Model {
   }
 
   /**
-   * Retrieves all translations for the role
+   * Retrieves a query for all associated translations
    * 
    * @returns {HasMany}
    */

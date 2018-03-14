@@ -46,18 +46,41 @@ class LegacyDatabaseHandler {
     return await this.db.from('availability').where({ person_id })
   }
 
+  /**
+   * Retrieves a legacy user by email
+   * 
+   * @param {String} email 
+   * @returns {Object}
+   */
   async getUserByEmail(email) {
     return await this.db.table('person').where({ email }).first()
   }
 
+  /**
+   * Retrieves a legacy user by username
+   * 
+   * @param {String} username 
+   * @returns {Object}
+   */
   async getUserByUsername(username) {
     return await this.db.table('person').where({ username }).first()
   }
 
+  /**
+   * Retrieves a legacy user by social security number
+   * 
+   * @param {String} ssn 
+   * @returns {Object}
+   */
   async getUserBySSN(ssn) {
     return await this.db.table('person').where({ ssn }).first()
   }
 
+  /**
+   * Updates a legacy user's password
+   * 
+   * @param {identifier} Object 
+   */
   async replaceUserPassword(identifier, password) {
     await this.db.table('person').where(identifier).update({password})
   }

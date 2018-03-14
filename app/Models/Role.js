@@ -2,22 +2,25 @@
 
 const Model = use('Model')
 
+/**
+ * Represents a user's role
+ * 
+ * @class Role
+ */
 class Role extends Model {
   /**
-   * Retrieves all users with this role
+   * Retrieves a query for all associated users
    * 
    * @returns {HasMany}
-   * @memberof Role
    */
   users () {
     return this.hasMany('App/Models/User')
   }
 
   /**
-   * Retrieves all translations for the role
+   * Retrieves a query for all associated translations
    * 
    * @returns {HasMany}
-   * @memberof Role
    */
   translations () {
     return this.hasMany('App/Models/RoleTranslation')
