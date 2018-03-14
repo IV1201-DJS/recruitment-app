@@ -2,22 +2,25 @@
 
 const Model = use('Model')
 
+/**
+ * Represents a translation for a competence
+ * 
+ * @class ApplicationStatusTranslation
+ */
 class CompetenceTranslation extends Model {
   /**
-   * Retrieves the language of the translation
+   * Retrieves a query for the associated language
    * 
-   * @returns {Language}
-   * @memberof CompetenceTranslation
+   * @returns {BelongsTo}
    */
   language () {
     return this.belongsTo('App/Models/Language')
   }
 
   /**
-   * Retrieves the translated competence
+   * Retrieves a query for the associated competence
    * 
-   * @returns {Competence}
-   * @memberof CompetenceTranslation
+   * @returns {BelongsTo}
    */
   competence () {
     return this.belongsTo('App/Models/Competence')

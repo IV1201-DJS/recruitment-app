@@ -14,25 +14,30 @@ const {
   AVAILABILITY_PARAMETERS_INVALID
 } = use('App/Exceptions/Codes')
 
-class ApplicationService {
+/**
+ * Repository for CRUD operations of Applications
+ * 
+ * @class ApplicationRepository
+ */
+class ApplicationRepository {
   constructor(user) {
     this.user = user
   }
   /**
    * Factory function that returns an instance if authorized
-   * @param  {[type]}  auth            [description]
-   * @return {ApplicationService}      [description]
+   * @param  {Auth}  auth            Adonis auth instance
+   * @return {ApplicationRepository}    
    */
   static async newInstance(auth, role_names = ['RECRUITER']) {
     await authorize.byRoles(auth, role_names)
-    return new ApplicationService(await auth.getUser())
+    return new ApplicationRepository(await auth.getUser())
   }
 
   /**
    * Retrieves a paginated result of applications
    * based on the conditions listed
-   * @param  {[type]}  conditions [description]
-   * @return {Promise}            [description]
+   * @param  {Object}  conditions   filtering parameters
+   * @return {Pagination}           
    */
   async fetchByConditions(conditions) {
     const {
@@ -67,6 +72,12 @@ class ApplicationService {
     }
   }
 
+  /**
+   * Retrieves an application by its ID
+   * 
+   * @param {Int} id 
+   * @return {Application}
+   */
   async fetchById(id) {
     const trx = await db.beginTransaction()
     const application = await Application
@@ -80,6 +91,12 @@ class ApplicationService {
     return application
   }
 
+  /**
+   * Creates an application from availabilities and competences
+   * 
+   * @param {{availabilities, competences}} information
+   * @return {Application}
+   */
   async createApplication(information) {
     const user = this.user
     const {
@@ -105,6 +122,12 @@ class ApplicationService {
     return application
   }
 
+  /**
+   * Updates the status of an application
+   * 
+   * @param {{application_id, new_status}} information
+   * @return {Application}
+   */
   async updateStatus(information) {
     const {
       application_id,
@@ -216,4 +239,4 @@ class ApplicationService {
   }
 }
 
-module.exports = ApplicationService
+module.exports = ApplicationRepository

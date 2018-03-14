@@ -2,22 +2,25 @@
 
 const Model = use('Model')
 
+/**
+ * Represents a translation for a role
+ * 
+ * @class ApplicationStatusTranslation
+ */
 class RoleTranslation extends Model {
   /**
-   * Retrieves the language of the translation
+   * Retrieves a query for the associated language
    * 
-   * @returns {Language}
-   * @memberof RoleTranslation
+   * @returns {BelongsTo}
    */
   language () {
     return this.belongsTo('App/Models/Language')
   }
 
   /**
-   * Retrieves the translated role
+   * Retrieves a query for the associated role
    * 
-   * @returns {Role}
-   * @memberof RoleTranslation
+   * @returns {BelongsTo}
    */
   role () {
     return this.belongsTo('App/Models/Role')

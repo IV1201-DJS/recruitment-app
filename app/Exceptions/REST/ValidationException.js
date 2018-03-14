@@ -2,6 +2,11 @@
 
 const { LogicalException } = require('@adonisjs/generic-exceptions')
 
+/**
+ * Exception for when validation fails
+ * 
+ * @class ValidationException
+ */
 class ValidationException extends LogicalException {
   handle ({ message }, { response }) {
     response

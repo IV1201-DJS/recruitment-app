@@ -2,22 +2,25 @@
 
 const Model = use('Model')
 
+/**
+ * Represents a user of the application
+ * 
+ * @class User
+ */
 class User extends Model {
   /**
-   * Retrieves the user's availabilities
+   * Retrieves a query for all associated availabilities
    *
-   * @returns {Collection}
-   * @memberof User
+   * @returns {HasMany}
    */
   availabilities () {
     return this.hasMany('App/Models/Availability')
   }
 
   /**
-   * Retrieves the user's competences
+   * Retrieves a query for all competences of this user
    *
-   * @returns {Collection}
-   * @memberof User
+   * @returns {HasMany}
    */
   competences () {
     return this
@@ -25,15 +28,19 @@ class User extends Model {
       .withPivot(['experience_years'])
   }
 
+  /**
+   * Retrieves a query for all associated applications
+   * 
+   * @returns {HasMany}
+   */
   applications () {
     return this.hasMany('App/Models/Application')
   }
 
   /**
-   * Retrieves the user's role
+   * Retrieves a query for the user's role
    *
-   * @returns {Role}
-   * @memberof User
+   * @returns {BelongsTo}
    */
   role () {
     return this.belongsTo('App/Models/Role')
@@ -46,12 +53,16 @@ class User extends Model {
    * tokens table.
    *
    * @returns {Object}
-   * @memberof User
    */
   tokens () {
     return this.hasMany('App/Models/Token')
   }
 
+  /**
+   * Determines if this user has a pending application
+   * 
+   * @param {Transaction} trx 
+   */
   async hasPendingApplication (trx) {
     const pending = await this.applications()
     .transacting(trx)
